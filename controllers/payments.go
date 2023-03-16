@@ -31,7 +31,8 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("payment.User.User_Id", payment.User.User_Id)
 
 	db.DB.Create(&payment)
-
+	
+	// update payment id in subscription when payment is successful
 	sub.Payment_Id = payment.Payment_Id
 	db.DB.Where("user_id=?", id).Updates(&sub)
 	json.NewEncoder(w).Encode(&payment)

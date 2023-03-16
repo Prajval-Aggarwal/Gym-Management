@@ -1,6 +1,10 @@
 package mod
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // only display for user full information
 type Display struct {
@@ -36,7 +40,9 @@ type Subscription struct {
 	Payment    Payment        `gorm:"references:Payment_Id"`
 	User_Id    string         `json:"user_id"` //Fk
 	User       User           `gorm:"references:User_Id"`
-	Emp_Id     string         `json:"emp_id"`    //FKs
+	Emp_Id     string         `json:"emp_id" gorm:"default:null"` //FKs
+	Emp        GymEmp         `gorm:"references:Emp_Id"`
+	Emp_name   string         `json:"emp_name"`
 	Subs_Name  string         `json:"subs_name"` //FK
 	StartDate  string         `json:"start_date"`
 	EndDate    string         `json:"end_date"`
@@ -49,10 +55,25 @@ type SubsType struct {
 	Price     float64 `json:"price"`
 }
 type GymEmp struct {
-	Emp_Id   string `json:"emp_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	//gorm.Model
+	Emp_Id    string    `json:"emp_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	Emp_name  string    `json:"emp_name"`
+	Gender    string    `json:"gender"`
+	Role      string    `json:"role"`
+	CreatedAt time.Time `json:"updated"`
+}
+
+// employee who has users under him count
+type EmpWithUser struct {
+	Emp_id string `json:"emp_id"`
 	Emp_name string `json:"emp_name"`
-	Gender   string `json:"gender"`
-	Role     string `json:"role"`
+	Alotted_members int `json:"alotted_members"`
+}
+
+// employee types
+type EmpTypes struct {
+	Role   string  `json:"role" gorm:"unique"`
+	Salary float64 `json:"salary"`
 }
 
 type Equipment struct {

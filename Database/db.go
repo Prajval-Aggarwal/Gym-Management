@@ -17,7 +17,7 @@ func init() {
 	if err != nil {
 		fmt.Println("Error in connecting to database:", err)
 	}
-	db.AutoMigrate(&mod.Subscription{}, &mod.Payment{}, &mod.SubsType{}, &mod.User{}, &mod.GymEmp{}, &mod.Equipment{})
+	db.AutoMigrate(&mod.Subscription{}, &mod.Payment{}, &mod.SubsType{}, &mod.User{}, &mod.GymEmp{}, &mod.Equipment{} , &mod.EmpTypes{}) 
 
 	DB = db
 	fmt.Println("Successfully connected to database")
