@@ -1,17 +1,16 @@
-package main
-
+package routes
 import (
 	"fmt"
 	cont "gym-api/controllers"
 	"log"
 	"net/http"
 )
-func main() {
+func Route() {
 
 	fmt.Println("Listening on port:8000")
 	mux := http.NewServeMux()
 	mux.HandleFunc("/createuser", cont.CreateUserHandler)
-	mux.HandleFunc("/makepayment", cont.MakepaymentHandler)
+	mux.HandleFunc("/makepayent", cont.MakepaymentHandler)
 	mux.HandleFunc("/createsubs", cont.CreateSubsHandler)
 	mux.HandleFunc("/createEmp", cont.CreateEmphandler)
 	mux.HandleFunc("/getPrice", cont.GetPrices)

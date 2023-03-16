@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 )
-
+// create a new user
 func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)

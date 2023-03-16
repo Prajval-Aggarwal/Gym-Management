@@ -2,6 +2,7 @@ package mod
 
 import "gorm.io/gorm"
 
+// only display for user full information
 type Display struct {
 	User_Id      string         `json:"user_id"`
 	User_Name    string         `json:"user_name"`
