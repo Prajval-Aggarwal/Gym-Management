@@ -44,7 +44,7 @@ type Subscription struct {
 }
 
 type SubsType struct {
-	Subs_Name string  `json:"name" gorm:"unique"`
+	Subs_Name string  `json:"subs_name" gorm:"unique"`
 	Price     float64 `json:"price"`
 }
 type GymEmp struct {
@@ -55,7 +55,8 @@ type GymEmp struct {
 }
 
 type Equipment struct {
-	Model_No   string `json:"model_no" gorm:"uuid_generate_v4();unique;primaryKey"` //PK
+	
+	// Model_No   string`json:"model_no" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	Equip_Name string `json:"equip_name"`
 	Quantity   int64  `json:"quantity"`
 }
