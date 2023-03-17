@@ -111,6 +111,10 @@ func UpdateSubscription(w http.ResponseWriter, r *http.Request) {
 }
 
 func EndSubscription(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	id := r.URL.Query().Get("id")
 	now := time.Now().Truncate(24 * time.Hour)
