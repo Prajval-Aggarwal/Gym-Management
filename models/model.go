@@ -48,6 +48,7 @@ type Subscription struct {
 	EndDate    string         `json:"end_date"`
 	Duration   float64        `json:"duration"`
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
+	Slot_id    int64          `json:"slot_id"`
 }
 
 type SubsType struct {
@@ -92,4 +93,12 @@ type EmpAttendence struct {
 	User_Id string `json:"user_id"`
 	Date    string `json:"date"`
 	Present string `json:"present" gorm:"default:null"`
+}
+
+// slot structs
+type Slot struct {
+	ID              int64  `gorm:"primaryKey"`
+	Start_time      string `json:"start_time"`
+	End_time        string `json:"end_time"`
+	Available_space int64  `json:"available_slots" gorm:"default:50"`
 }
