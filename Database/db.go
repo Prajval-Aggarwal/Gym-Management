@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func Connect() error {
 	fmt.Println("Connecting to database...")
-	dsn := "host=localhost port=5432 user=postgres password=Onkar17082001 dbname=gym_1 sslmode=disable"
+	dsn := "host=localhost port=5432 user=postgres password=Test@123 dbname=gym1 sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -20,7 +20,7 @@ func Connect() error {
 		return err
 	}
 
-	db.AutoMigrate(&mod.Subscription{}, &mod.Payment{}, &mod.SubsType{}, &mod.User{}, &mod.GymEmp{}, &mod.Equipment{}, &mod.UAttendence{}, &mod.EmpAttendence{})
+	db.AutoMigrate(&mod.Subscription{}, &mod.Payment{}, &mod.SubsType{}, &mod.User{}, &mod.GymEmp{}, &mod.Equipment{}, &mod.UAttendence{}, &mod.EmpAttendence{}, &mod.EmpTypes{})
 
 	DB = db
 	fmt.Println("Successfully connected to database")

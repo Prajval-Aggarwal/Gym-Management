@@ -71,7 +71,7 @@ func GetEmployeesWithUsers(w http.ResponseWriter, r *http.Request) {
 	query := "SELECT gym_emps.emp_id , gym_emps.emp_name , COUNT(gym_emps.emp_id) as alotted_members FROM gym_emps LEFT JOIN subscriptions ON subscriptions.emp_id = gym_emps.emp_id GROUP BY gym_emps.emp_id HAVING gym_emps.role = 'Trainer';"
 	db.DB.Raw(query).Scan(&emp)
 	json.NewEncoder(w).Encode(&emp)
-
+}
 func EmpAttendence(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	now := time.Now()

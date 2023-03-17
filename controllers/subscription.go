@@ -30,35 +30,33 @@ func CreateSubsHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.Create(&sub)
 
 	AddEmptoSub(sub)
-	
+
 	json.NewEncoder(w).Encode(&sub)
-=======
 	// json.NewEncoder(w).Encode(&sub)
 
 	//show bill according to the subscription chosen and duration given
 	var subcription_type mod.SubsType
-	db.DB.Where("subs_name=?",sub.Subs_Name).First(&subcription_type)
+	db.DB.Where("subs_name=?", sub.Subs_Name).First(&subcription_type)
 
 	//bill amount if duration is 6 months or 12 months
 	var billamount float64
-	if (sub.Duration==6 ){
+	if sub.Duration == 6 {
 		//10% discount
-		billamount=(subcription_type.Price*sub.Duration)*0.9
-		fmt.Fprintln(w,"10% Discount applied")
+		billamount = (subcription_type.Price * sub.Duration) * 0.9
+		fmt.Fprintln(w, "10% Discount applied")
 
-	}else if(sub.Duration==12){
+	} else if sub.Duration == 12 {
 		//20% discount
-		billamount=(subcription_type.Price*sub.Duration)*0.8
-		fmt.Fprintln(w,"20% Discount applied")
+		billamount = (subcription_type.Price * sub.Duration) * 0.8
+		fmt.Fprintln(w, "20% Discount applied")
 
-
-	}else{
-	billamount=subcription_type.Price*sub.Duration
+	} else {
+		billamount = subcription_type.Price * sub.Duration
 	}
-	fmt.Fprint(w,"\n\n")
-	fmt.Fprint(w,"BILL OF SUBSCRIPTION\n\n")
+	fmt.Fprint(w, "\n\n")
+	fmt.Fprint(w, "BILL OF SUBSCRIPTION\n\n")
 
-	fmt.Fprintf(w," Subscription:%s \n Duration:%d \n Bill Amount:%d ",sub.Subs_Name,int(sub.Duration),int(billamount))
+	fmt.Fprintf(w, " Subscription:%s \n Duration:%d \n Bill Amount:%d ", sub.Subs_Name, int(sub.Duration), int(billamount))
 
 }
 
@@ -146,16 +144,15 @@ func EndSubscription(w http.ResponseWriter, r *http.Request) {
 	db.DB.Where("user_id=?", id).Delete(&subs)
 	w.Write([]byte("Deleted user sucessfully.."))
 
-
 }
 
 // adding employee to subscription
-func AddEmptoSub(sub mod.Subscription)  {
+func AddEmptoSub(sub mod.Subscription) {
 	fmt.Println("Adding employee to subscription")
 	var emp mod.GymEmp
 	// random employee id
 	//! pick the latest updated trainer
-	fmt.Println("from random id: ",SelectRand().Emp_Id)
+	fmt.Println("from random id: ", SelectRand().Emp_Id)
 	// db.DB.Order("created_at desc").Limit(1).Find(&emp)
 
 	fmt.Println("employeeid: ", SelectRand().Emp_Id)
@@ -163,15 +160,15 @@ func AddEmptoSub(sub mod.Subscription)  {
 	sub.Emp_name = SelectRand().Emp_name
 	if emp.Role != "Trainer" {
 		fmt.Println("Alotted employee can only be a trainer , please add a trainer!!")
-		 
+
 	}
 	fmt.Println("userid: ", sub.User_Id)
 	db.DB.Model(&mod.Subscription{}).Where("user_id =?", sub.User_Id).Updates(&sub)
 }
 
-func SelectRand()mod.GymEmp{
+func SelectRand() mod.GymEmp {
 	fmt.Println("fetching random users")
-	var emp  mod.GymEmp
+	var emp mod.GymEmp
 	query := "SELECT * FROM gym_emps  WHERE gym_emps.role = 'Trainer' ORDER BY RANDOM()  LIMIT 1;"
 	db.DB.Raw(query).Scan(&emp)
 	return emp
@@ -184,4 +181,3 @@ func GetSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&subs)
 
 }
-
