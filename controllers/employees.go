@@ -6,6 +6,7 @@ import (
 	db "gym-api/Database"
 	mod "gym-api/models"
 	"net/http"
+	"time"
 )
 
 func GetEmployees(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +31,7 @@ func CreateEmphandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(emp)
 }
 
-func SetorUpdateEmpRole(w http.ResponseWriter, r *http.Request) {
+func SetEmpRole(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "PUT" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -70,4 +71,15 @@ func GetEmployeesWithUsers(w http.ResponseWriter, r *http.Request) {
 	query := "SELECT gym_emps.emp_id , gym_emps.emp_name , COUNT(gym_emps.emp_id) as alotted_members FROM gym_emps LEFT JOIN subscriptions ON subscriptions.emp_id = gym_emps.emp_id GROUP BY gym_emps.emp_id HAVING gym_emps.role = 'Trainer';"
 	db.DB.Raw(query).Scan(&emp)
 	json.NewEncoder(w).Encode(&emp)
+
+func EmpAttendence(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	now := time.Now()
+
+	var temp mod.EmpAttendence
+	temp.User_Id = id
+	temp.Present = "Present"
+	temp.Date = now.Format("02 Jan 2006")
+	db.DB.Create(&temp)
+
 }

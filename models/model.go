@@ -51,9 +51,10 @@ type Subscription struct {
 }
 
 type SubsType struct {
-	Subs_Name string  `json:"name" gorm:"unique"`
+	Subs_Name string  `json:"subs_name" gorm:"unique"`
 	Price     float64 `json:"price"`
 }
+
 type GymEmp struct {
 	//gorm.Model
 	Emp_Id    string    `json:"emp_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
@@ -77,7 +78,18 @@ type EmpTypes struct {
 }
 
 type Equipment struct {
-	Model_No   string `json:"model_no" gorm:"uuid_generate_v4();unique;primaryKey"` //PK
+	// Model_No   string`json:"model_no" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	Equip_Name string `json:"equip_name"`
 	Quantity   int64  `json:"quantity"`
+}
+
+type UAttendence struct {
+	User_Id string `json:"user_id"`
+	Date    string `json:"date"`
+	Present string `json:"present" gorm:"default:null"`
+}
+type EmpAttendence struct {
+	User_Id string `json:"user_id"`
+	Date    string `json:"date"`
+	Present string `json:"present" gorm:"default:null"`
 }

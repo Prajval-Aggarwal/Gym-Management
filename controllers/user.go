@@ -5,8 +5,6 @@ import (
 	"fmt"
 	db "gym-api/Database"
 	mod "gym-api/models"
-	"log"
-	"math"
 	"net/http"
 	"time"
 )
@@ -50,38 +48,13 @@ func GetUserbyId(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func EndSubscription(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func UserAttendence(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
-	now := time.Now().Truncate(24 * time.Hour)
-	var subs mod.Subscription
-	var payment mod.Payment
-	db.DB.Where("user_id=?", id).First(&subs)
-	if subs.Payment_Id == "" {
-		fmt.Println("Payment not done")
-		db.DB.Where("user_id=?", id).Delete(&subs)
-		return
-	}
-	db.DB.Where("payment_id=?", subs.Payment_Id).First(&payment)
-	startDate, err := time.Parse("02 Jan 2006", subs.StartDate)
-	if err != nil {
-		log.Fatal(err)
-	}
-	temp := now.Sub(startDate).Hours() / 24
-	duration := float64(temp)
-	fmt.Println("Duration is", duration)
-	// if duration < 30 {
-	// 	http.Error(w, "Cannot end membership before one month", http.StatusBadRequest)
-	// 	return
-	// }
-	oneDayMoney := (payment.Amount / (float64(subs.Duration) * 30))
-	MoneyRefund := math.Round((payment.Amount - (duration * oneDayMoney)) / 2)
-	subs.Duration = duration / 30
+	now := time.Now()
 
-	payment.Amount -= MoneyRefund
-	db.DB.Where("user_id=?", id).Updates(&payment)
-	db.DB.Where("user_id=?", id).Updates(&subs)
-	db.DB.Where("user_id=?", id).Delete(&subs)
-	w.Write([]byte("Deleted user sucessfully.."))
-
+	var temp mod.UAttendence
+	temp.User_Id = id
+	temp.Present = "Present"
+	temp.Date = now.Format("02 Jan 2006")
+	db.DB.Create(&temp)
 }
