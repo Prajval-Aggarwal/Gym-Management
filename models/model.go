@@ -97,7 +97,7 @@ type EmpAttendence struct {
 
 // slot structs
 type Slot struct {
-	ID              int64  `gorm:"primaryKey"`
+	ID              int64  `json:"slot_id" gorm:"primaryKey"`
 	Start_time      string `json:"start_time"`
 	End_time        string `json:"end_time"`
 	Available_space int64  `json:"available_slots" gorm:"default:50"`
