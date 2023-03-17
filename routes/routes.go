@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 )
-
 func Routes() {
 	err := db.Connect()
 	if err != nil {
@@ -44,3 +43,4 @@ func Routes() {
 	log.Fatal(http.ListenAndServe(":8000", mux))
 
 }
+
