@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	cont "gym-api/controllers"
-	"log"
-	"net/http"
+	"gym-api/routes"
 )
 
 func main() {
@@ -36,4 +33,6 @@ func main() {
 	mux.HandleFunc("/equipmentList",cont.GetEquipList)
 	
 	log.Fatal(http.ListenAndServe(":8000", mux))
+	routes.Routes()
+
 }

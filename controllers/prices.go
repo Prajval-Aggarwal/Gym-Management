@@ -22,7 +22,7 @@ func GetPrices(w http.ResponseWriter, r *http.Request) {
 
 func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != "PUT" {
+	if r.Method != http.MethodPut {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -46,9 +46,7 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(" Old Price updated successfully"))
 	}
 
-	
-	
-	
+
 
 }
 
