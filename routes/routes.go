@@ -14,9 +14,7 @@ func Routes() {
 		panic(err)
 
 	}
-
-	//cont.ScheduleDailyEntry()
-	cont.UserDailyEntry()
+	cont.SlotDistribution()
 	fmt.Println("Listening on port:8000")
 	mux := http.NewServeMux()
 

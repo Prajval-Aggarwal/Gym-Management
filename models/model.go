@@ -71,3 +71,13 @@ type EmpAttendence struct {
 	Date    string `json:"date"`
 	Present string `json:"present" gorm:"default:null"`
 }
+type Slot struct {
+	ID              int    `gorm:"primaryKey"`
+	Start_time      string `json:"start_time"`
+	End_time        string `json:"end_time"`
+	Available_slots int64  `json:"available_slots" gorm:"default:50"`
+}
+type Credentials struct {
+	UserName string `json:"username" gorm:"unique"`
+	Password string `json:"password"`
+}
