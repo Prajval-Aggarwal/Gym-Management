@@ -77,7 +77,3 @@ type Slot struct {
 	End_time        string `json:"end_time"`
 	Available_slots int64  `json:"available_slots" gorm:"default:50"`
 }
-type Credentials struct {
-	UserName string `json:"username" gorm:"unique"`
-	Password string `json:"password"`
-}
