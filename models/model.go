@@ -56,7 +56,7 @@ type GymEmp struct {
 }
 
 type Equipment struct {
-	Model_No   string `json:"model_no" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	// Model_No   string`json:"model_no" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	Equip_Name string `json:"equip_name"`
 	Quantity   int64  `json:"quantity"`
 }
