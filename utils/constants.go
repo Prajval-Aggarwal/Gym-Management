@@ -9,5 +9,5 @@ const SlotLen = 2
 const Host = "localhost"
 const Port = "5432"
 const User = "postgres"
-const Password = "Test@123"
-const Dbname = "gym1"
+const Password = "Onkar17082001"
+const Dbname = "gym_1"
