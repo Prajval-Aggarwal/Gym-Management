@@ -106,3 +106,6 @@ type Credential struct {
 	UserName string `json:"username" gorm:"unique"`
 	Password string `json:"password"`
 }
+type DbVersion struct {
+	Version int `json:"version"`
+}
