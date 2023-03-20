@@ -38,7 +38,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Println("get users called")
 	var output []mod.Display
-	query := "SELECT users.user_id,users.user_name,users.gender, payments.amount, payments.payment_type, payments.payment_id, subscriptions.subs_name, subscriptions.start_date, subscriptions.deleted_at,subscriptions.end_date, subscriptions.duration, subscriptions.emp_id FROM users JOIN payments ON users.user_id = payments.user_id JOIN subscriptions ON payments.payment_id = subscriptions.payment_id; "
+	query := "SELECT users.user_id,users.user_name,users.gender, payments.amount, payments.offer_amount,payments.offer,payments.payment_type, payments.payment_id, subscriptions.subs_name, subscriptions.start_date, subscriptions.deleted_at,subscriptions.end_date, subscriptions.duration, subscriptions.emp_id FROM users JOIN payments ON users.user_id = payments.user_id JOIN subscriptions ON payments.payment_id = subscriptions.payment_id;"
 
 	db.DB.Raw(query).Scan(&output)
 

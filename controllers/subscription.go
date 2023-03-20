@@ -146,11 +146,11 @@ func EndSubscription(w http.ResponseWriter, r *http.Request) {
 	// 	http.Error(w, "Cannot end membership before one month", http.StatusBadRequest)
 	// 	return
 	// }
-	oneDayMoney := (payment.Amount / (float64(subs.Duration) * 30))
-	MoneyRefund := math.Round((payment.Amount - (duration * oneDayMoney)) / 2)
+	oneDayMoney := (payment.OfferAmount / (float64(subs.Duration) * 30))
+	MoneyRefund := math.Round((payment.OfferAmount - (duration * oneDayMoney)) / 2)
 	subs.Duration = duration / 30
 
-	payment.Amount -= MoneyRefund
+	payment.OfferAmount -= MoneyRefund
 	db.DB.Where("user_id=?", id).Updates(&payment)
 	db.DB.Where("user_id=?", id).Updates(&subs)
 	db.DB.Where("user_id=?", id).Delete(&subs)
