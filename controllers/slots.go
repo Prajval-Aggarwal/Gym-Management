@@ -2,11 +2,11 @@ package cont
 
 import (
 	"encoding/json"
+	"net/http"
 	"fmt"
 	db "gym-api/Database"
 	mod "gym-api/models"
-	ut "gym-api/utils"
-	"net/http"
+	cons "gym-api/utils"
 	"time"
 )
 
@@ -15,24 +15,23 @@ func SlotDistribution() {
 	eTime, _ := time.Parse("15:04", ut.End_time)
 	diff := eTime.Sub(sTime)
 	noOfSlots := int64(diff.Hours() / ut.Slot_length)
+
 	//fmt.Println("number of slots is:", noOfSlots)
 	ssTime := sTime
 	var slot mod.Slot
-	//fmt.Println("sstime is", ssTime)
-	var i int64
-	for i = 1; i <= noOfSlots; i++ {
-
+	for i := 1; i <= noOfSlots; i++ {
 		slot.ID = i
 		seTime := ssTime.Add(time.Hour * 2)
-
+		fmt.Println("setie is", seTime)
 		slot.Start_time = ssTime.Format("15:04")
 		slot.End_time = seTime.Format("15:04")
 		ssTime = seTime
-
+		fmt.Println("slot is:", slot)
 		db.DB.Create(&slot)
 	}
 
 }
+
 
 // slot update handler
 func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,3 +68,4 @@ func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	
 
 }
+

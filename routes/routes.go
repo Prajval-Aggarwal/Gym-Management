@@ -46,8 +46,14 @@ func Routes() {
 	mux.HandleFunc("/getPrice", cont.GetPrices)
 	mux.HandleFunc("/priceUpdate", cont.PriceUpdateHandler)
 
+
 	//slots routes
 	mux.HandleFunc("/slotUpdate", cont.SlotUpdateHandler)
+
+
+	//Authentication Handler
+	mux.HandleFunc("/register", cont.RegisterHandler)
+	mux.HandleFunc("/login", cont.LoginHandler)
 
 
 	//Listening to the server

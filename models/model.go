@@ -67,9 +67,9 @@ type GymEmp struct {
 
 // employee who has users under him count
 type EmpWithUser struct {
-	Emp_id string `json:"emp_id"`
-	Emp_name string `json:"emp_name"`
-	Alotted_members int `json:"alotted_members"`
+	Emp_id          string `json:"emp_id"`
+	Emp_name        string `json:"emp_name"`
+	Alotted_members int    `json:"alotted_members"`
 }
 
 // employee types
@@ -101,4 +101,9 @@ type Slot struct {
 	Start_time      string `json:"start_time"`
 	End_time        string `json:"end_time"`
 	Available_space int64  `json:"available_slots" gorm:"default:50"`
+
+type Credential struct {
+	UserName string `json:"username" gorm:"unique"`
+	Password string `json:"password"`
+
 }
