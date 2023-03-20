@@ -4,20 +4,28 @@ import (
 	"fmt"
 	db "gym-api/Database"
 	cont "gym-api/controllers"
+	mod "gym-api/models"
 	"log"
 	"net/http"
 )
 
 func Routes() {
+	fmt.Println("Listening on port:8000")
+	mux := http.NewServeMux()
+
 	err := db.Connect()
 	if err != nil {
 		panic(err)
 
 	}
-
-	//cont.ScheduleDailyEntry()
-	fmt.Println("Listening on port:8000")
-	mux := http.NewServeMux()
+	if db.DB.Migrator().HasTable(&mod.Slot{}) {
+		var slots []mod.Slot
+		query := "SELECT slots.id,slots.start_time,slots.end_time,slots.available_space FROM slots ORDER BY id ASC;"
+		db.DB.Raw(query).Scan(&slots)
+		if slots == nil {
+			cont.SlotDistribution()
+		}
+	}
 
 	//User Routes
 	mux.HandleFunc("/createuser", cont.CreateUserHandler)
@@ -46,15 +54,12 @@ func Routes() {
 	mux.HandleFunc("/getPrice", cont.GetPrices)
 	mux.HandleFunc("/priceUpdate", cont.PriceUpdateHandler)
 
-
 	//slots routes
 	mux.HandleFunc("/slotUpdate", cont.SlotUpdateHandler)
-
 
 	//Authentication Handler
 	mux.HandleFunc("/register", cont.RegisterHandler)
 	mux.HandleFunc("/login", cont.LoginHandler)
-
 
 	//Listening to the server
 	log.Fatal(http.ListenAndServe(":8000", mux))

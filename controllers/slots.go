@@ -22,7 +22,6 @@ func SlotDistribution() {
 	for i := 1; i <= noOfSlots; i++ {
 		slot.ID = i
 		seTime := ssTime.Add(time.Hour * 2)
-		fmt.Println("setie is", seTime)
 		slot.Start_time = ssTime.Format("15:04")
 		slot.End_time = seTime.Format("15:04")
 		ssTime = seTime
@@ -35,13 +34,10 @@ func SlotDistribution() {
 // slot update handler
 func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	fmt.Println("We are updating the slot")
-	fmt.Println("Please provide the user id for which you want to update the slot...")
-	// if r.Method == "POST" {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	return
-	// }
+	if r.Method == http.MethodPut {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	id := r.URL.Query().Get("id")
 	fmt.Println("id: ", id)
 	var sub mod.Subscription
