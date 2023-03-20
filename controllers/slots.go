@@ -2,19 +2,19 @@ package cont
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
 	db "gym-api/Database"
 	mod "gym-api/models"
 	cons "gym-api/utils"
+	"net/http"
 	"time"
 )
 
 func SlotDistribution() {
-	sTime, _ := time.Parse("15:04", ut.Start_time)
-	eTime, _ := time.Parse("15:04", ut.End_time)
+	sTime, _ := time.Parse("15:04", cons.Start_time)
+	eTime, _ := time.Parse("15:04", cons.End_time)
 	diff := eTime.Sub(sTime)
-	noOfSlots := int64(diff.Hours() / ut.Slot_length)
+	noOfSlots := int(diff.Hours() / cons.SlotLen)
 
 	//fmt.Println("number of slots is:", noOfSlots)
 	ssTime := sTime
@@ -31,7 +31,6 @@ func SlotDistribution() {
 	}
 
 }
-
 
 // slot update handler
 func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +64,5 @@ func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.Where("id =?", newSlotid).Updates(&slot1)
 	db.DB.Where("user_id =?", id).Updates(&sub)
 	json.NewEncoder(w).Encode(&sub)
-	
 
 }
-
