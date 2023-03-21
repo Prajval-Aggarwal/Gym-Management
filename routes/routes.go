@@ -61,6 +61,12 @@ func Routes() {
 	//Authentication Handler
 	mux.HandleFunc("/register", cont.RegisterHandler)
 	mux.HandleFunc("/login", cont.LoginHandler)
+	mux.HandleFunc("/forgotPassword", cont.ForgotPassword)
+	mux.HandleFunc("/resetPassword", cont.ResetPassword)
+
+	//OTP verfication routes
+	mux.HandleFunc("/sendotp", cont.SendOTP)
+	mux.HandleFunc("/verifyotp", cont.CheckOTP)
 
 	//OTP verfication routes
 	mux.HandleFunc("/sendotp", cont.SendOTP)

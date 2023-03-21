@@ -3,6 +3,7 @@ package mod
 import (
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 )
 
@@ -26,6 +27,7 @@ type User struct {
 	User_Name  string `json:"name"`
 	Gender     string `json:"gender"`
 	Contact_No string `json:"phoneNumber"`
+
 }
 
 type Payment struct {
@@ -109,8 +111,13 @@ type Slot struct {
 type Credential struct {
 	UserName string `json:"username" gorm:"unique"`
 	Password string `json:"password"`
+	//Contact  string `json:"contact" gorm:"unique"`
 }
 type DbVersion struct {
 	Version int `json:"version"`
+}
+type Claims struct {
+	Username string `json:"user_id"`
+	jwt.RegisteredClaims
 }
 
