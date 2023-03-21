@@ -23,18 +23,22 @@ type Display struct {
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
 }
 type User struct {
-	User_Id   string `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
-	User_Name string `json:"name"`
-	Gender    string `json:"gender"`
-	Email     string `json:"email"`
+	User_Id    string `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	User_Name  string `json:"name"`
+	Gender     string `json:"gender"`
+	Contact_No string `json:"phoneNumber"`
+
 }
 
 type Payment struct {
 	Payment_Id   string  `json:"payment_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	User_Id      string  `json:"user_id"`                                                        //FK
 	User         User    `gorm:"references:User_Id"`
-	Amount       float64 `json:"amount"`
+	Amount       float64   `json:"amount"`
+	OfferAmount float64   `json:"offer_amount"`
+	Offer          string `json:"offer"`
 	Payment_Type string  `json:"payment_type"`
+
 }
 
 type Subscription struct {
@@ -112,8 +116,8 @@ type Credential struct {
 type DbVersion struct {
 	Version int `json:"version"`
 }
-
 type Claims struct {
 	Username string `json:"user_id"`
 	jwt.RegisteredClaims
 }
+
