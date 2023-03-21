@@ -10,6 +10,10 @@ import (
 )
 
 func GetEmployees(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	var emps []mod.GymEmp
 	db.DB.Find(&emps)
@@ -18,6 +22,10 @@ func GetEmployees(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateEmphandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	var emp mod.GymEmp
 	json.NewDecoder(r.Body).Decode(&emp)
@@ -32,6 +40,7 @@ func CreateEmphandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetEmpRole(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != "PUT" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -57,6 +66,10 @@ func SetEmpRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEmpRole(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	var emprole []mod.EmpTypes
 	db.DB.Find(&emprole)
@@ -64,6 +77,10 @@ func GetEmpRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEmployeesWithUsers(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Println("You are watching employees having users under them")
 	var emp []mod.EmpWithUser
@@ -73,6 +90,10 @@ func GetEmployeesWithUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&emp)
 }
 func EmpAttendence(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	id := r.URL.Query().Get("id")
 	now := time.Now()
 

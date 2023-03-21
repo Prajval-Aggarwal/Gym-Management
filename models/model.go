@@ -22,17 +22,21 @@ type Display struct {
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
 }
 type User struct {
-	User_Id   string `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
-	User_Name string `json:"name"`
-	Gender    string `json:"gender"`
+	User_Id    string `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	User_Name  string `json:"name"`
+	Gender     string `json:"gender"`
+	Contact_No string `json:"phoneNumber"`
 }
 
 type Payment struct {
 	Payment_Id   string  `json:"payment_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	User_Id      string  `json:"user_id"`                                                        //FK
 	User         User    `gorm:"references:User_Id"`
-	Amount       float64 `json:"amount"`
+	Amount       float64   `json:"amount"`
+	OfferAmount float64   `json:"offer_amount"`
+	Offer          string `json:"offer"`
 	Payment_Type string  `json:"payment_type"`
+
 }
 
 type Subscription struct {
@@ -48,7 +52,7 @@ type Subscription struct {
 	EndDate    string         `json:"end_date"`
 	Duration   float64        `json:"duration"`
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
-	Slot_id int64 `json:"slot_id"`
+	Slot_id    int64          `json:"slot_id"`
 }
 
 type SubsType struct {
@@ -67,9 +71,9 @@ type GymEmp struct {
 
 // employee who has users under him count
 type EmpWithUser struct {
-	Emp_id string `json:"emp_id"`
-	Emp_name string `json:"emp_name"`
-	Alotted_members int `json:"alotted_members"`
+	Emp_id          string `json:"emp_id"`
+	Emp_name        string `json:"emp_name"`
+	Alotted_members int    `json:"alotted_members"`
 }
 
 // employee types
@@ -97,8 +101,16 @@ type EmpAttendence struct {
 
 // slot structs
 type Slot struct {
-	ID              int64  `gorm:"primaryKey"`
+	ID              int    `json:"slot_id" gorm:"primaryKey"`
 	Start_time      string `json:"start_time"`
 	End_time        string `json:"end_time"`
 	Available_space int64  `json:"available_slots" gorm:"default:50"`
 }
+type Credential struct {
+	UserName string `json:"username" gorm:"unique"`
+	Password string `json:"password"`
+}
+type DbVersion struct {
+	Version int `json:"version"`
+}
+

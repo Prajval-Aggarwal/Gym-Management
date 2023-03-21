@@ -1,11 +1,15 @@
-package constants
 
+package cons
 
-const(
+const Start_time = "06:00"
+const End_time = "22:00"
 
+const SlotLen = 2
 
-	Start_time string ="06:00"
-	End_time string ="22:00"
-	SlotLen float64 =2
+// Database constants
+const Host = "localhost"
+const Port = "5432"
+const User = "postgres"
+const Password = "6280912015"
+const Dbname = "gym2"
 
-)
