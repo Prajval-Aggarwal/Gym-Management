@@ -22,9 +22,10 @@ type Display struct {
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
 }
 type User struct {
-	User_Id   string `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
-	User_Name string `json:"name"`
-	Gender    string `json:"gender"`
+	User_Id    string `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	User_Name  string `json:"name"`
+	Gender     string `json:"gender"`
+	Contact_No string `json:"phoneNumber"`
 }
 
 type Payment struct {
