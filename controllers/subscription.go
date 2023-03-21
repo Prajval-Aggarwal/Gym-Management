@@ -27,12 +27,12 @@ func CreateSubsHandler(w http.ResponseWriter, r *http.Request) {
 	sub.EndDate = dateStr.AddDate(0, 0, int(sub.Duration*30)).Format("02 Jan 2006")
 
 	sub.User_Id = id
-
 	// slot selection for user
 	var slots mod.Slot
 	db.DB.Where("id=?", sub.Slot_id).Find(&slots)
 	slots.Available_space -= 1
 	db.DB.Where("id=?",slots.ID).Updates(&slots)
+  
 	// sort kr dena -> rajan
 
 	db.DB.Create(&sub)

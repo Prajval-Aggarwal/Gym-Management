@@ -113,3 +113,4 @@ type Credential struct {
 type DbVersion struct {
 	Version int `json:"version"`
 }
+

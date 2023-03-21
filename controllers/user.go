@@ -22,7 +22,6 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 		query := "SELECT * FROM slots"
 		db.DB.Raw(query).Scan(&slots)
 		json.NewEncoder(w).Encode(&slots)
-		
 
 	var user mod.User
 	json.NewDecoder(r.Body).Decode(&user)
