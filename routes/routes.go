@@ -61,6 +61,11 @@ func Routes() {
 	mux.HandleFunc("/register", cont.RegisterHandler)
 	mux.HandleFunc("/login", cont.LoginHandler)
 
+	//OTP verfication routes
+	mux.HandleFunc("/sendotp", cont.SendOTP)
+	mux.HandleFunc("/verifyotp", cont.CheckOTP)
+
+
 	//Listening to the server
 	log.Fatal(http.ListenAndServe(":8000", mux))
 
