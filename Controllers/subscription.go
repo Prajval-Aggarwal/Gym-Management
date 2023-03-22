@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	db "gym-api/Database"
-	mod "gym-api/models"
+	mod "gym-api/Models"
 	"log"
 	"math"
 	"net/http"

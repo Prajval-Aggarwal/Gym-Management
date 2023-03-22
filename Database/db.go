@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	mod "gym-api/models"
+	mod "gym-api/Models"
 	cons "gym-api/utils"
 
 	"gorm.io/driver/postgres"

@@ -34,6 +34,7 @@ type Payment struct {
 	User         User    `gorm:"references:User_Id"`
 	Amount       float64 `json:"amount"`
 	Payment_Type string  `json:"payment_type"`
+	Status       string  `json:"status"`
 }
 
 type Subscription struct {
