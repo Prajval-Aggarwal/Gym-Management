@@ -20,6 +20,14 @@ func CreateSubsHandler(w http.ResponseWriter, r *http.Request) {
 	var sub mod.Subscription
 	json.NewDecoder(r.Body).Decode(&sub)
 	id := r.URL.Query().Get("id")
+	var u mod.User
+	db.DB.Where("user_id = ?", id).Find(&u)
+	fmt.Println("user: ", u)
+	if u.User_Id == "" {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "User with id %s not found", id)
+		return
+	}
 	// fmt.Println("id is", id)
 	dateStr := time.Now().Truncate(time.Hour)
 	sub.StartDate = dateStr.Format("02 Jan 2006")

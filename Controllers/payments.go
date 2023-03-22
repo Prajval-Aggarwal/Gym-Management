@@ -20,6 +20,14 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	id := r.URL.Query().Get("id")
 	fmt.Println("Id is :", id)
+	var u mod.User
+	db.DB.Where("user_id = ?", id).Find(&u)
+	fmt.Println("user: ", u)
+	if u.User_Id == "" {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "User with id %s not found", id)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	var payment mod.Payment
 	var sub mod.Subscription
