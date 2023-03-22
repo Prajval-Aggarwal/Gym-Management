@@ -67,6 +67,13 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error processing payment", http.StatusInternalServerError)
 		return
 	}
+	// creating card params
+	// cardParams := &stripe.CardParams{
+	// 	Number: stripe.String("4242424242424242"),
+	// 	ExpMonth: stripe.String("12"),
+	// 	ExpYear: stripe.String("25"),
+	// 	CVC: stripe.String("123"),
+	// }
 	
 	params1 := &stripe.PaymentIntentConfirmParams{
 		PaymentMethod: stripe.String("pm_card_visa"),

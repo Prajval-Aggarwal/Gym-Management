@@ -5,7 +5,7 @@ import (
 	"fmt"
 	db "gym-api/Database"
 	mod "gym-api/Models"
-	cons "gym-api/utils"
+	cons "gym-api/Utils"
 	"net/http"
 	"time"
 )

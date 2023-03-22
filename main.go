@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gym-api/routes"
+	"gym-api/Routes"
 	"github.com/stripe/stripe-go"
 )
 func main() {
