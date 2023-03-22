@@ -30,25 +30,23 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 		//10% discount
 		billamount = (memShip.Price * sub.Duration) * 0.9
 		fmt.Fprintln(w, "10% Discount applied")
-		payment.Offer="10%"
-		
+		payment.Offer = "10%"
 
 	} else if sub.Duration == 12 {
 		//20% discount
 		billamount = (memShip.Price * sub.Duration) * 0.8
 		fmt.Fprintln(w, "20% Discount applied")
-		payment.Offer="10%"
-
+		payment.Offer = "10%"
 
 	} else {
 		billamount = memShip.Price * sub.Duration
 	}
 
-	payment.Amount=(memShip.Price * sub.Duration) 
+	payment.Amount = (memShip.Price * sub.Duration)
 	payment.OfferAmount = billamount
 	payment.User_Id = id
 
-	fmt.Println("payment.User.User_Id", payment.User.User_Id)
+	fmt.Println("payment.User.User_Id", payment.User_Id)
 
 	db.DB.Create(&payment)
 

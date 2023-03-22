@@ -28,11 +28,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	//bs, err := bcrypt.GenerateFromPassword([]byte(cred.Password), 8)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	//cred.Password = string(bs)
+	bs, err := bcrypt.GenerateFromPassword([]byte(cred.Password), 8)
+	if err != nil {
+		panic(err)
+	}
+	cred.Password = string(bs)
 	db.DB.Create(&cred)
 	w.Write([]byte("User Registerd sucessfully"))
 	json.NewEncoder(w).Encode(cred)
@@ -68,7 +68,7 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("expiration time is: ", expirationTime)
 	var cred mod.Credential
 	username := r.URL.Query().Get("username")
-	err := db.DB.Where("user_name=?", username).Find(&cred).Error
+	err := db.DB.Where("user_name=?", username).First(&cred).Error
 	if err != nil {
 		w.Write([]byte("User with given username do not exists....."))
 		return
@@ -116,11 +116,11 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewDecoder(r.Body).Decode(&password)
 	fmt.Println("Password: ", password["password"])
-	// bs, err := bcrypt.GenerateFromPassword([]byte(password["password"]), 8)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// userCred.Password = string(bs)
+	bs, err := bcrypt.GenerateFromPassword([]byte(password["password"]), 8)
+	if err != nil {
+		panic(err)
+	}
+	userCred.Password = string(bs)
 	userCred.Password = password["password"]
 	err = db.DB.Where("user_name=?", claims.Username).Updates(userCred).Error
 	if err != nil {
