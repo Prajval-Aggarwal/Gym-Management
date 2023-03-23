@@ -9,7 +9,7 @@ import (
 )
 
 var TWILIO_ACCOUNT_SID string = "AC5869424c6ae2d0b27f66a5d5b9b90485"
-var TWILIO_AUTH_TOKEN string = "465b65f74039bb124fd93d990723c04c"
+var TWILIO_AUTH_TOKEN string = "28625c8fcd3ce5ab1a67b30ebc86221f"
 var VERIFY_SERVICE_SID string = "VA6602f8535f8f1369b0ed68eed5d6af67"
 var client *twilio.RestClient = twilio.NewRestClientWithParams(twilio.ClientParams{
 	Username: TWILIO_ACCOUNT_SID,

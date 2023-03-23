@@ -75,6 +75,7 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error processing payment", http.StatusInternalServerError)
 		return
 	}
+	
 	// creating card params
 	// cardParams := &stripe.CardParams{
 	// 	Number: stripe.String("4242424242424242"),
@@ -120,7 +121,8 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	payment.Payment_Id = pi.ID
-
+	method := pi.PaymentMethodTypes
+	payment.Payment_Type = method[0]
 	// Return the payment status
 	payment.Status = string(pi1.Status)
 	db.DB.Create(&payment)

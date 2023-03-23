@@ -45,16 +45,18 @@ func Routes() {
 	mux.HandleFunc("/getMemberShip", cont.GetSubscriptionsHandler)
 
 	//Employee Routes
-	mux.HandleFunc("/createEmp", cont.CreateEmphandler)
-	mux.HandleFunc("/getEmp", cont.GetEmployees)
-	mux.HandleFunc("/updateEmp", cont.SetEmpRole)
-	mux.HandleFunc("/getEmpRole", cont.GetEmpRole)
-	mux.HandleFunc("/empWithuser", cont.GetEmployeesWithUsers)
-	mux.HandleFunc("/empAttendence", cont.EmpAttendence)
+	mux.HandleFunc("/createEmp", cont.CreateEmployeeHandler)
+	mux.HandleFunc("/getEmp", cont.GetEmployeesHandler)
+	mux.HandleFunc("/updateEmp", cont.EmployeeRoleHandler)
+	mux.HandleFunc("/getEmpRole", cont.GetEmployeeRoleHandler)
+	mux.HandleFunc("/empWithuser", cont.GetMembersWithUsersHandler)
+	mux.HandleFunc("/empAttendence", cont.EmployeeAttendenceHandler)
 
 	//Prices routes
 	mux.HandleFunc("/getPrice", cont.GetPrices)
 	mux.HandleFunc("/priceUpdate", cont.PriceUpdateHandler)
+	
+
 
 	//slots routes
 	mux.HandleFunc("/slotUpdate", cont.SlotUpdateHandler)

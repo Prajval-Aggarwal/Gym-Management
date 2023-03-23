@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func GetEmployees(w http.ResponseWriter, r *http.Request) {
+func GetEmployeesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -21,7 +21,7 @@ func GetEmployees(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateEmphandler(w http.ResponseWriter, r *http.Request) {
+func CreateEmployeeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -39,8 +39,7 @@ func CreateEmphandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(emp)
 }
 
-func SetEmpRole(w http.ResponseWriter, r *http.Request) {
-
+func EmployeeRoleHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "PUT" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -65,7 +64,7 @@ func SetEmpRole(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetEmpRole(w http.ResponseWriter, r *http.Request) {
+func GetEmployeeRoleHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -76,7 +75,7 @@ func GetEmpRole(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&emprole)
 }
 
-func GetEmployeesWithUsers(w http.ResponseWriter, r *http.Request) {
+func GetMembersWithUsersHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -89,7 +88,7 @@ func GetEmployeesWithUsers(w http.ResponseWriter, r *http.Request) {
 	db.DB.Raw(query).Scan(&emp)
 	json.NewEncoder(w).Encode(&emp)
 }
-func EmpAttendence(w http.ResponseWriter, r *http.Request) {
+func EmployeeAttendenceHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
