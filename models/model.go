@@ -13,6 +13,7 @@ type Display struct {
 	User_Name    string         `json:"user_name"`
 	Gender       string         `json:"gender"`
 	Amount       float64        `json:"amount"`
+	OfferAmount  float64        `json:"offer_amount"`
 	Payment_Type string         `json:"payment_type"`
 	Payment_Id   string         `json:"payment_id" `
 	Emp_Id       string         `json:"emp_id"`
@@ -27,27 +28,21 @@ type User struct {
 	User_Name  string `json:"name"`
 	Gender     string `json:"gender"`
 	Contact_No string `json:"phoneNumber"`
-
 }
 
 type Payment struct {
 	Payment_Id   string  `json:"payment_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	User_Id      string  `json:"user_id"`                                                        //FK
-	User         User    `gorm:"references:User_Id"`
-	Amount       float64   `json:"amount"`
-	OfferAmount float64   `json:"offer_amount"`
-	Offer          string `json:"offer"`
+	Amount       float64 `json:"amount"`
+	OfferAmount  float64 `json:"offer_amount"`
+	Offer        string  `json:"offer"`
 	Payment_Type string  `json:"payment_type"`
-
 }
 
 type Subscription struct {
 	Payment_Id string         `json:"payment_id" gorm:"default:null"` //FK
-	Payment    Payment        `gorm:"references:Payment_Id"`
-	User_Id    string         `json:"user_id"` //Fk
-	User       User           `gorm:"references:User_Id"`
-	Emp_Id     string         `json:"emp_id" gorm:"default:null"` //FKs
-	Emp        GymEmp         `gorm:"references:Emp_Id"`
+	User_Id    string         `json:"user_id"`                        //Fk
+	Emp_Id     string         `json:"emp_id" gorm:"default:null"`     //FKs
 	Emp_name   string         `json:"emp_name"`
 	Subs_Name  string         `json:"subs_name"` //FK
 	StartDate  string         `json:"start_date"`
@@ -120,4 +115,3 @@ type Claims struct {
 	Username string `json:"user_id"`
 	jwt.RegisteredClaims
 }
-

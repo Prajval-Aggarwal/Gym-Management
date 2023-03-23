@@ -1,6 +1,7 @@
 package cont
 
 import (
+	"encoding/json"
 	"fmt"
 	cons "gym-api/utils"
 	"net/http"
@@ -12,8 +13,6 @@ import (
 var client *twilio.RestClient = twilio.NewRestClientWithParams(twilio.ClientParams{
 	Username: cons.TWILIO_ACCOUNT_SID,
 	Password: cons.TWILIO_AUTH_TOKEN,
-
-
 })
 
 func sendOtp(to string) {
@@ -23,23 +22,17 @@ func sendOtp(to string) {
 
 	resp, err := client.VerifyV2.CreateVerification(cons.VERIFY_SERVICE_SID, params)
 
-
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
 		fmt.Printf("Sent verification '%s'\n", *resp.Sid)
 	}
 }
-func checkOtp(to string) bool {
-	var code string
-	fmt.Println("Please check your phone and enter the code:")
-	fmt.Scanln(&code)
-
+func checkOtp(to string, code string) bool {
 	params := &openapi.CreateVerificationCheckParams{}
 	params.SetTo(to)
 	params.SetCode(code)
 	resp, err := client.VerifyV2.CreateVerificationCheck(cons.VERIFY_SERVICE_SID, params)
-
 
 	if err != nil {
 		fmt.Println("Error is :", err)
@@ -64,11 +57,13 @@ func SendOTP(w http.ResponseWriter, r *http.Request) {
 func CheckOTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	phNumber := r.URL.Query().Get("number")
-	if checkOtp("+91" + phNumber) {
+	var otp = make(map[string]string)
+	json.NewDecoder(r.Body).Decode(&otp)
+	if checkOtp("+91"+phNumber, otp["otp"]) {
 		w.Write([]byte("Phone Number verified sucessfully"))
 	} else {
 		w.Write([]byte("Verifictaion failed"))
 	}
 }
-// email api key := "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"
 
+// email api key := "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"
