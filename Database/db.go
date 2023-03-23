@@ -24,7 +24,8 @@ func Fun() {
 			Version: 1,
 		})
 
-	} else if dbVersion.Version < 2 {
+	}
+	if dbVersion.Version < 2 {
 		err := DB.AutoMigrate(&mod.Slot{})
 		if err != nil {
 			panic(err)
@@ -33,7 +34,8 @@ func Fun() {
 			Version: 2,
 		})
 
-	} else if dbVersion.Version < 3 {
+	} 
+	if dbVersion.Version < 3 {
 		err := DB.AutoMigrate(&mod.Credential{})
 		if err != nil {
 			panic(err)

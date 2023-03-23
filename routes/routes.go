@@ -35,6 +35,7 @@ func Routes() {
 
 	//Payment Routes
 	mux.HandleFunc("/makepayment", cont.MakepaymentHandler)
+	mux.HandleFunc("/response",cont.Response)
 
 	//subscription Routes
 	mux.HandleFunc("/createsubs", cont.CreateSubsHandler)

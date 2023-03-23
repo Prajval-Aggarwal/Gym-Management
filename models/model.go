@@ -31,12 +31,16 @@ type User struct {
 }
 
 type Payment struct {
-	Payment_Id   string  `json:"payment_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	Payment_Id   string  `json:"payment_id"` //PK
 	User_Id      string  `json:"user_id"`                                                        //FK
 	Amount       float64 `json:"amount"`
+	OrderID		string		`json:"orderid"`
 	OfferAmount  float64 `json:"offer_amount"`
 	Offer        string  `json:"offer"`
 	Payment_Type string  `json:"payment_type"`
+	Status        string  `json:"status"`
+
+	
 }
 
 type Subscription struct {
