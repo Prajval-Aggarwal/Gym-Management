@@ -1,4 +1,4 @@
-package cont
+package Controllers
 
 import (
 	"encoding/json"
@@ -29,24 +29,24 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&user)
 }
 
-func GetUsers(w http.ResponseWriter, r *http.Request) {
+func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Println("get users called")
-	var output []mod.Display
+	var display []mod.Display
 	query := "SELECT users.user_id,users.user_name,users.gender, payments.amount, payments.offer_amount,payments.offer,payments.payment_type, payments.payment_id, subscriptions.subs_name, subscriptions.start_date, subscriptions.deleted_at,subscriptions.end_date, subscriptions.duration, subscriptions.emp_id FROM users JOIN payments ON users.user_id = payments.user_id JOIN subscriptions ON payments.payment_id = subscriptions.payment_id;"
 
-	db.DB.Raw(query).Scan(&output)
+	db.DB.Raw(query).Scan(&display)
 
-	json.NewEncoder(w).Encode(&output)
+	json.NewEncoder(w).Encode(&display)
 
 }
 
 // get user by id
-func GetUserbyId(w http.ResponseWriter, r *http.Request) {
+func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -73,7 +73,7 @@ func GetUserbyId(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func UserAttendence(w http.ResponseWriter, r *http.Request) {
+func UserAttendenceHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -81,9 +81,9 @@ func UserAttendence(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	now := time.Now()
 
-	var temp mod.UAttendence
-	temp.User_Id = id
-	temp.Present = "Present"
-	temp.Date = now.Format("02 Jan 2006")
-	db.DB.Create(&temp)
+	var user mod.UAttendence
+	user.User_Id = id
+	user.Present = "Present"
+	user.Date = now.Format("02 Jan 2006")
+	db.DB.Create(&user)
 }

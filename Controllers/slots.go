@@ -1,4 +1,4 @@
-package cont
+package Controllers
 
 import (
 	"encoding/json"
@@ -11,20 +11,20 @@ import (
 )
 
 func SlotDistribution() {
-	sTime, _ := time.Parse("15:04", cons.Start_time)
-	eTime, _ := time.Parse("15:04", cons.End_time)
-	diff := eTime.Sub(sTime)
+	startTime, _ := time.Parse("15:04", cons.Start_time)
+	endTime, _ := time.Parse("15:04", cons.End_time)
+	diff := endTime.Sub(startTime)
 	noOfSlots := int(diff.Hours() / cons.SlotLen)
 
 	//fmt.Println("number of slots is:", noOfSlots)
-	ssTime := sTime
+	slotStartTime := startTime
 	var slot mod.Slot
 	for i := 1; i <= noOfSlots; i++ {
 		slot.ID = i
-		seTime := ssTime.Add(time.Hour * 2)
-		slot.Start_time = ssTime.Format("15:04")
+		seTime := slotStartTime.Add(time.Hour * 2)
+		slot.Start_time = slotStartTime.Format("15:04")
 		slot.End_time = seTime.Format("15:04")
-		ssTime = seTime
+		slotStartTime = seTime
 		//fmt.Println("slot is:", slot)
 		db.DB.Create(&slot)
 	}
@@ -40,24 +40,24 @@ func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	id := r.URL.Query().Get("id")
 	fmt.Println("id: ", id)
-	var u mod.User
-	db.DB.Where("user_id = ?", id).Find(&u)
-	fmt.Println("user: ", u)
-	if u.User_Id == "" {
+	var user mod.User
+	db.DB.Where("user_id = ?", id).Find(&user)
+	fmt.Println("user: ", user)
+	if user.User_Id == "" {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "User with id %s not found", id)
 		return
 	}
-	var sub mod.Subscription
-	db.DB.Where("user_id =?", id).First(&sub)
-	oldSlotId := sub.Slot_id
+	var subscription mod.Subscription
+	db.DB.Where("user_id =?", id).First(&subscription)
+	oldSlotId := subscription.Slot_id
 	fmt.Println("old slot id is: ", oldSlotId)
 	sub1 := make(map[string]int64)
 
 	json.NewDecoder(r.Body).Decode(&sub1)
 
 	newSlotid := sub1["slot_id"]
-	sub.Slot_id = newSlotid
+	subscription.Slot_id = newSlotid
 	var slot mod.Slot
 	db.DB.Where("id =?", oldSlotId).Find(&slot)
 	slot.Available_space += 1
@@ -66,7 +66,7 @@ func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.Where("id =?", newSlotid).Find(&slot1)
 	slot1.Available_space = slot1.Available_space - 1
 	db.DB.Where("id =?", newSlotid).Updates(&slot1)
-	db.DB.Where("user_id =?", id).Updates(&sub)
-	json.NewEncoder(w).Encode(&sub)
+	db.DB.Where("user_id =?", id).Updates(&subscription)
+	json.NewEncoder(w).Encode(&subscription)
 
 }

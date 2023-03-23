@@ -1,4 +1,4 @@
-package cont
+package Controllers
 
 import (
 	"encoding/json"
@@ -13,47 +13,55 @@ import (
 	"github.com/stripe/stripe-go/v72/paymentintent"
 )
 
-func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
+func MakePaymentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	id := r.URL.Query().Get("id")
 	fmt.Println("Id is :", id)
-	var u mod.User
-	db.DB.Where("user_id = ?", id).Find(&u)
-	fmt.Println("user: ", u)
-	if u.User_Id == "" {
+	var user mod.User
+	db.DB.Where("user_id = ?", id).Find(&user)
+	fmt.Println("user: ", user)
+	if user.User_Id == "" {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "User with id %s not found", id)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	var payment mod.Payment
-	var sub mod.Subscription
+	var subscription mod.Subscription
 	json.NewDecoder(r.Body).Decode(&payment)
 
-	db.DB.Where("user_id=?", id).First(&sub)
+	db.DB.Where("user_id=?", id).First(&subscription)
 
 	var memShip mod.SubsType
-	db.DB.Where("subs_name=?", sub.Subs_Name).First(&memShip)
+	db.DB.Where("subs_name=?", subscription.Subs_Name).First(&memShip)
 
 	var billamount float64
-	if sub.Duration == 6 {
+	if subscription.Duration == 6 {
 		//10% discount
-		billamount = (memShip.Price * sub.Duration) * 0.9
+		billamount = (memShip.Price * subscription.Duration) * 0.9
 		fmt.Fprintln(w, "10% Discount applied")
+		payment.OfferAmount=billamount
+		payment.Offer="10%"
 
-	} else if sub.Duration == 12 {
+	} else if subscription.Duration == 12 {
 		//20% discount
-		billamount = (memShip.Price * sub.Duration) * 0.8
+		billamount = (memShip.Price * subscription.Duration) * 0.8
 		fmt.Fprintln(w, "20% Discount applied")
+		payment.OfferAmount=billamount
+		payment.Offer="20%"
+
+
 
 	} else {
-		billamount = memShip.Price * sub.Duration
+		billamount = memShip.Price * subscription.Duration
+		payment.OfferAmount=billamount
+
 	}
 
-	payment.Amount = billamount
+	payment.Amount =  memShip.Price * subscription.Duration
 	payment.User_Id = id
 
 	// stripe payment integration
@@ -75,17 +83,9 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error processing payment", http.StatusInternalServerError)
 		return
 	}
-	// creating card params
-	// cardParams := &stripe.CardParams{
-	// 	Number: stripe.String("4242424242424242"),
-	// 	ExpMonth: stripe.String("12"),
-	// 	ExpYear: stripe.String("25"),
-	// 	CVC: stripe.String("123"),
-	// }
-	
+
 	params1 := &stripe.PaymentIntentConfirmParams{
 		PaymentMethod: stripe.String("pm_card_visa"),
-		
 	}
 
 	pi1, err := paymentintent.Confirm(pi.ID, params1)
@@ -120,9 +120,8 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	payment.Payment_Id = pi.ID
-
-	// Return the payment status
 	payment.Status = string(pi1.Status)
+	payment.Payment_Type = pi.PaymentMethodTypes[0]
 	db.DB.Create(&payment)
 
 	// update payment id in subscription when payment is successful
@@ -131,16 +130,15 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	// 	db.DB.Where("user_id=?", id).Updates(&sub)
 	// }
 
-
-	sub.Payment_Id = payment.Payment_Id
-	db.DB.Where("user_id=?", id).Updates(&sub)
-	// json.NewEncoder(w).Encode(&pi)
+	subscription.Payment_Id = payment.Payment_Id
+	db.DB.Where("user_id=?", id).Updates(&subscription)
 	json.NewEncoder(w).Encode(&payment)
-	// w.Write([]byte("Payment processed successfully"))
+
 }
 
-func HandlePaymentStatus(w http.ResponseWriter, r *http.Request) {
+func PaymentStatusHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the payment ID from the request URL
+	w.Header().Set("Content-Type", "application/json")
 	paymentID := r.URL.Query().Get("payment_id")
 	if paymentID == "" {
 		http.Error(w, "Payment ID not provided", http.StatusBadRequest)
@@ -154,10 +152,7 @@ func HandlePaymentStatus(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error retrieving payment details", http.StatusInternalServerError)
 		return
 	}
-
-	// Return the payment status
 	status := pi.Status
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": string(status)})
 }
-
