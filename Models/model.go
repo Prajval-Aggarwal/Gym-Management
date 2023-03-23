@@ -37,6 +37,7 @@ type Payment struct {
 	OfferAmount  float64 `json:"offer_amount"`
 	Offer        string  `json:"offer"`
 	Payment_Type string  `json:"payment_type"`
+	Status       string  `json:"status"`
 }
 
 type Subscription struct {

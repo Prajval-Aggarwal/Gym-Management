@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	db "gym-api/Database"
-	mod "gym-api/models"
-	cons "gym-api/utils"
+	mod "gym-api/Models"
+	cons "gym-api/Utils"
 	"net/http"
 	"time"
 

@@ -3,7 +3,7 @@ package cont
 import (
 	"encoding/json"
 	"fmt"
-	cons "gym-api/utils"
+	cons "gym-api/Utils"
 	"net/http"
 
 	"github.com/twilio/twilio-go"

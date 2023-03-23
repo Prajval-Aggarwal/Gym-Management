@@ -3,13 +3,15 @@ package routes
 import (
 	"fmt"
 	db "gym-api/Database"
-	cont "gym-api/controllers"
-	mod "gym-api/models"
+	cont "gym-api/Controllers"
+	mod "gym-api/Models"
 	"log"
 	"net/http"
+	
 )
 
 func Routes() {
+	
 	fmt.Println("Listening on port:8000")
 	mux := http.NewServeMux()
 
@@ -67,9 +69,13 @@ func Routes() {
 	mux.HandleFunc("/sendotp", cont.SendOTP)
 	mux.HandleFunc("/verifyotp", cont.CheckOTP)
 
+	// stripe payment
+	mux.HandleFunc("/payment/status", cont.HandlePaymentStatus)
+
 	//Equipment routes
 	mux.HandleFunc("/getEquipment", cont.GetEquipList)
 	mux.HandleFunc("/createEquipment", cont.CreateEquipHandler)
+
 
 	//Listening to the server
 	log.Fatal(http.ListenAndServe(":8000", mux))

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	db "gym-api/Database"
-	mod "gym-api/models"
-	cons "gym-api/utils"
+	mod "gym-api/Models"
+	cons "gym-api/Utils"
 	"net/http"
 	"time"
 )
@@ -40,6 +40,14 @@ func SlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	id := r.URL.Query().Get("id")
 	fmt.Println("id: ", id)
+	var u mod.User
+	db.DB.Where("user_id = ?", id).Find(&u)
+	fmt.Println("user: ", u)
+	if u.User_Id == "" {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "User with id %s not found", id)
+		return
+	}
 	var sub mod.Subscription
 	db.DB.Where("user_id =?", id).First(&sub)
 	oldSlotId := sub.Slot_id
