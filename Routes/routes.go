@@ -62,6 +62,8 @@ func Routes() {
 	//Authentication Handler
 	mux.HandleFunc("/register", cont.RegisterHandler)
 	mux.HandleFunc("/login", cont.LoginHandler)
+	mux.HandleFunc("/forgotPassword", cont.ForgotPassword)
+	mux.HandleFunc("/resetPassword", cont.ResetPassword)
 
 	//OTP verfication routes
 	mux.HandleFunc("/sendotp", cont.SendOTP)
@@ -70,7 +72,9 @@ func Routes() {
 	// stripe payment
 	mux.HandleFunc("/payment/status", cont.HandlePaymentStatus)
 
-	
+	//Equipment routes
+	mux.HandleFunc("/getEquipment", cont.GetEquipList)
+	mux.HandleFunc("/createEquipment", cont.CreateEquipHandler)
 
 
 	//Listening to the server

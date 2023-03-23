@@ -3,6 +3,7 @@ package mod
 import (
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 )
 
@@ -12,6 +13,7 @@ type Display struct {
 	User_Name    string         `json:"user_name"`
 	Gender       string         `json:"gender"`
 	Amount       float64        `json:"amount"`
+	OfferAmount  float64        `json:"offer_amount"`
 	Payment_Type string         `json:"payment_type"`
 	Payment_Id   string         `json:"payment_id" `
 	Emp_Id       string         `json:"emp_id"`
@@ -31,19 +33,17 @@ type User struct {
 type Payment struct {
 	Payment_Id   string  `json:"payment_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
 	User_Id      string  `json:"user_id"`                                                        //FK
-	User         User    `gorm:"references:User_Id"`
 	Amount       float64 `json:"amount"`
+	OfferAmount  float64 `json:"offer_amount"`
+	Offer        string  `json:"offer"`
 	Payment_Type string  `json:"payment_type"`
 	Status       string  `json:"status"`
 }
 
 type Subscription struct {
 	Payment_Id string         `json:"payment_id" gorm:"default:null"` //FK
-	Payment    Payment        `gorm:"references:Payment_Id"`
-	User_Id    string         `json:"user_id"` //Fk
-	User       User           `gorm:"references:User_Id"`
-	Emp_Id     string         `json:"emp_id" gorm:"default:null"` //FKs
-	Emp        GymEmp         `gorm:"references:Emp_Id"`
+	User_Id    string         `json:"user_id"`                        //Fk
+	Emp_Id     string         `json:"emp_id" gorm:"default:null"`     //FKs
 	Emp_name   string         `json:"emp_name"`
 	Subs_Name  string         `json:"subs_name"` //FK
 	StartDate  string         `json:"start_date"`
@@ -107,7 +107,12 @@ type Slot struct {
 type Credential struct {
 	UserName string `json:"username" gorm:"unique"`
 	Password string `json:"password"`
+	//Contact  string `json:"contact" gorm:"unique"`
 }
 type DbVersion struct {
 	Version int `json:"version"`
+}
+type Claims struct {
+	Username string `json:"user_id"`
+	jwt.RegisteredClaims
 }

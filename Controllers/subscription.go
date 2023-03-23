@@ -35,12 +35,12 @@ func CreateSubsHandler(w http.ResponseWriter, r *http.Request) {
 	sub.EndDate = dateStr.AddDate(0, 0, int(sub.Duration*30)).Format("02 Jan 2006")
 
 	sub.User_Id = id
-
 	// slot selection for user
 	var slots mod.Slot
 	db.DB.Where("id=?", sub.Slot_id).Find(&slots)
 	slots.Available_space -= 1
 	db.DB.Where("id=?",slots.ID).Updates(&slots)
+  
 	// sort kr dena -> rajan
 
 	db.DB.Create(&sub)
@@ -154,11 +154,11 @@ func EndSubscription(w http.ResponseWriter, r *http.Request) {
 	// 	http.Error(w, "Cannot end membership before one month", http.StatusBadRequest)
 	// 	return
 	// }
-	oneDayMoney := (payment.Amount / (float64(subs.Duration) * 30))
-	MoneyRefund := math.Round((payment.Amount - (duration * oneDayMoney)) / 2)
+	oneDayMoney := (payment.OfferAmount / (float64(subs.Duration) * 30))
+	MoneyRefund := math.Round((payment.OfferAmount - (duration * oneDayMoney)) / 2)
 	subs.Duration = duration / 30
 
-	payment.Amount -= MoneyRefund
+	payment.OfferAmount -= MoneyRefund
 	db.DB.Where("user_id=?", id).Updates(&payment)
 	db.DB.Where("user_id=?", id).Updates(&subs)
 	db.DB.Where("user_id=?", id).Delete(&subs)

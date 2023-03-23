@@ -25,7 +25,7 @@ func SlotDistribution() {
 		slot.Start_time = ssTime.Format("15:04")
 		slot.End_time = seTime.Format("15:04")
 		ssTime = seTime
-		fmt.Println("slot is:", slot)
+		//fmt.Println("slot is:", slot)
 		db.DB.Create(&slot)
 	}
 
