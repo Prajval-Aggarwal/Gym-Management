@@ -46,8 +46,6 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(" Old Price updated successfully"))
 	}
 
-
-
 }
 
 

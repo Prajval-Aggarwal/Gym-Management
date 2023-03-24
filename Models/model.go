@@ -81,9 +81,10 @@ type EmpTypes struct {
 }
 
 type Equipment struct {
-	// Model_No   string`json:"model_no" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
-	Equip_Name string `json:"equip_name"`
-	Quantity   int64  `json:"quantity"`
+	Model_No   string  `json:"model_no" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	Equip_Name string  `json:"equip_name"`
+	Quantity   int64   `json:"quantity"`
+	Weight     float64 `json:"weight"`
 }
 
 type UAttendence struct {
@@ -105,14 +106,16 @@ type Slot struct {
 	Available_space int64  `json:"available_slots" gorm:"default:50"`
 }
 type Credential struct {
+	UserID   string `json:"user_id"  gorm:"default:uuid_generate_v4();unique;primaryKey"`
 	UserName string `json:"username" gorm:"unique"`
 	Password string `json:"password"`
-	//Contact  string `json:"contact" gorm:"unique"`
+	Contact  string `json:"contact" gorm:"unique"`
 }
 type DbVersion struct {
 	Version int `json:"version"`
 }
 type Claims struct {
+	UserId   string
 	Username string `json:"user_id"`
 	jwt.RegisteredClaims
 }
