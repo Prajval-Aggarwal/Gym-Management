@@ -10,6 +10,7 @@ import (
 	mod "gym-api/models"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"text/template"
 
 	razorpay "github.com/razorpay/razorpay-go"
@@ -137,7 +138,7 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	//ORDER CREATION------------------------------------------------------>
 
 
-	client := razorpay.NewClient("rzp_test_MLjFMJxEVuaLjd", "Qi5HgPzuGUeKjQMOyiTUGjs8")
+	client := razorpay.NewClient("rzp_test_MLjFMJxEVuaLjd", os.Getenv("API_SecretKey"))
 
 	data := map[string]interface{}{
 		"amount":   billamount,        

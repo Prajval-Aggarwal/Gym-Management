@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 	mod "gym-api/models"
-	cons "gym-api/utils"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -51,7 +51,7 @@ func Fun() {
 func Connect() error {
 	fmt.Println("Connecting to database...")
 
-	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", cons.Host, cons.Port, cons.User, cons.Password, cons.Dbname)
+	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", os.Getenv("DB_Host"),os.Getenv("DB_Port"), os.Getenv("DB_User"), os.Getenv("DB_Password"), os.Getenv("Dbname"))
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("Error in connecting to database:", err)
