@@ -1,4 +1,4 @@
-package Controllers
+package cont
 
 import (
 	"encoding/json"

@@ -73,7 +73,7 @@ func StripePayment(amount float64, w http.ResponseWriter) (pi, pi1 *stripe.Payme
 
 }
 
-func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
+func MakePaymentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -130,7 +130,7 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&payment)
 }
 
-func HandlePaymentStatus(w http.ResponseWriter, r *http.Request) {
+func PaymentStatusHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the payment ID from the request URL
 	paymentID := r.URL.Query().Get("payment_id")
 	if paymentID == "" {

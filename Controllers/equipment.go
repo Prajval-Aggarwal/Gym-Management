@@ -1,4 +1,4 @@
-package Controllers
+package cont
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ func CreateEquipmentHandler(w http.ResponseWriter, r *http.Request) {
 	result := db.DB.Where("equip_name =?", equipment.Equip_Name).Updates(&equipment)
 	if result.Error != nil {
 		fmt.Println("error in DB")
-	} else if result.RowsAffected == 0 { 
+	} else if result.RowsAffected == 0 {
 		db.DB.Create(&equipment)
 		fmt.Fprint(w, "New Equipment added")
 		json.NewEncoder(w).Encode(&equipment)

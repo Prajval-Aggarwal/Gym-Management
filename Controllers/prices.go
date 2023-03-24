@@ -1,4 +1,4 @@
-package Controllers
+package cont
 
 import (
 	"encoding/json"
@@ -14,11 +14,10 @@ func GetPricesHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.Find(&memberhips)
 
 	//sort the database entries by price
-	query:="SELECT * FROM subs_types ORDER BY price ASC"
+	query := "SELECT * FROM subs_types ORDER BY price ASC"
 	db.DB.Raw(query).Scan(&memberhips)
 	json.NewEncoder(w).Encode(&memberhips)
 }
-
 
 func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -34,20 +33,16 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	result:=db.DB.Model(&mod.SubsType{}).Where("subs_name =?", membership.Subs_Name).Updates(&membership)
-	if result.Error!=nil{
+	result := db.DB.Model(&mod.SubsType{}).Where("subs_name =?", membership.Subs_Name).Updates(&membership)
+	if result.Error != nil {
 		fmt.Println("error in DB")
-	}else if result.RowsAffected == 0 {//if the subs_name is not in record then create new record
+	} else if result.RowsAffected == 0 { //if the subs_name is not in record then create new record
 		db.DB.Create(&membership)
-		fmt.Fprint(w,"New subscription type added")
+		fmt.Fprint(w, "New subscription type added")
 
-	}else{
+	} else {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(" Old Price updated successfully"))
 	}
 
 }
-
-
-
-

@@ -33,7 +33,7 @@ func Routes() {
 	mux.HandleFunc("/getUsers", cont.GetUsersHandler)
 	mux.HandleFunc("/userAttendence", cont.UserAttendenceHandler)
 	mux.HandleFunc("/getUserID", cont.GetUserHandler)
-	
+
 	//Payment Routes
 	mux.HandleFunc("/makepayment", cont.MakePaymentHandler)
 	mux.HandleFunc("/payment/status", cont.PaymentStatusHandler)
@@ -68,7 +68,6 @@ func Routes() {
 	//OTP verfication routes
 	mux.HandleFunc("/sendotp", cont.SendOTPHandler)
 	mux.HandleFunc("/verifyotp", cont.CheckOTPHandler)
-
 
 	//Equipment routes
 	mux.HandleFunc("/createEquipment", cont.CreateEquipmentHandler)

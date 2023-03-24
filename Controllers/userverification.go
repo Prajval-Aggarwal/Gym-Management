@@ -1,4 +1,4 @@
-package Controllers
+package cont
 
 import (
 	"encoding/json"
@@ -65,5 +65,3 @@ func CheckOTPHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Verifictaion failed"))
 	}
 }
-
-

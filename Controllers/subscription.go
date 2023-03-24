@@ -1,4 +1,4 @@
-package Controllers
+package cont
 
 import (
 	"encoding/json"
@@ -39,8 +39,8 @@ func CreatSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
 	var slots mod.Slot
 	db.DB.Where("id=?", subscription.Slot_id).Find(&slots)
 	slots.Available_space -= 1
-	db.DB.Where("id=?",slots.ID).Updates(&slots)
-  
+	db.DB.Where("id=?", slots.ID).Updates(&slots)
+
 	// sort kr dena -> rajan
 
 	db.DB.Create(&subscription)

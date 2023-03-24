@@ -1,4 +1,4 @@
-package Controllers
+package cont
 
 import (
 	"encoding/json"
@@ -63,7 +63,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+func ForgotPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	fmt.Println("expiration time is: ", expirationTime)
@@ -76,8 +76,8 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	//check if the user is valid then only create the token
 	claims := mod.Claims{
-		UserId:   cred.UserID,
-		Username: cred.UserName,
+		UserId:   credential.UserID,
+		Username: credential.UserName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
