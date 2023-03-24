@@ -83,20 +83,13 @@ var paymentRes paymentresponse
 
 
 
-
-
-
-
-
-
-
 func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		
 	}
 	id := r.URL.Query().Get("id")
-	fmt.Println("Id is :", id)
+	fmt.Println("user_Id is :", id)
 	w.Header().Set("Content-Type", "application/json")
 	var payment mod.Payment
 	var sub mod.Subscription
@@ -126,22 +119,33 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		billamount = memShip.Price * sub.Duration
 		billamount=billamount*100
+		payment.Offer="NO OFFER"
 
 	}
-
-	// payment.Amount = (memShip.Price * sub.Duration)
-	// payment.OfferAmount = billamount
-	payment.User_Id = id
+	payment.Amount = (memShip.Price * sub.Duration)
+	payment.User_Id=id
+	payment.OfferAmount=billamount/100
 	db.DB.Create(&payment)
+	
+	// payment.OfferAmount = billamount
+	
 
+
+	order_creation(id,billamount,w)
+
+	
+
+}
+func order_creation(params_id string,amount float64 ,writer http.ResponseWriter){
 
 	//ORDER CREATION------------------------------------------------------>
-
+	var sub mod.Subscription
+	db.DB.Where("user_id=?", params_id).First(&sub)
 
 	client := razorpay.NewClient("rzp_test_MLjFMJxEVuaLjd", os.Getenv("API_SecretKey"))
 
 	data := map[string]interface{}{
-		"amount":   billamount,        
+		"amount":   amount,        
 		"currency": "INR",
 		"notes": map[string]interface{}{
 
@@ -151,7 +155,7 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	Body, err := client.Order.Create(data, nil)
 
 	if err != nil {
-		fmt.Println("error")
+		fmt.Println("error in order create request")
 	}
 
 	order_id := Body["id"].(string)
@@ -169,8 +173,11 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 	
 // Template
 	t, err := template.ParseFiles("controllers/app.html")
+	if err!=nil{
+		fmt.Println("template parsing error",err)
+	}
 
-	err = t.Execute(w, pagevar)
+	err = t.Execute(writer, pagevar)
 	if err != nil {
 
 		fmt.Println("template executing error", err)
@@ -185,31 +192,26 @@ func MakepaymentHandler(w http.ResponseWriter, r *http.Request) {
 		
 
 	//update during order creation
-		payment.User_Id=id
+		var payment mod.Payment
+		
 		payment.OrderID=order_id
-		db.DB.Create(&payment)
 		
-		
-		
-		sub.Payment_Id=paymentRes.paymentID
-		
-		db.DB.Where("user_id=?", id).Updates(&sub)
+		db.DB.Where("user_id=?",params_id).Updates(&payment)
 
-	
 
 }
 
-func Response(w http.ResponseWriter, r *http.Request) {
 
+
+func Response(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Response function called./....")
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	id := r.URL.Query().Get("id")
-	fmt.Println("Id is :", id)
-	w.Header().Set("Content-Type", "application/json")
+	
 
 	// fmt.Println("Response body",string(body))
 	var response PaymentStatusUpdate
@@ -217,29 +219,32 @@ func Response(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("")
 	// fmt.Println("response",response)
 	fmt.Println("id", response.Payload.Payment.Entity.ID)
+	fmt.Println("order_id",response.Payload.Payment.Entity.OrderID)
 	fmt.Println("amount", (response.Payload.Payment.Entity.Amount)/100)
 	fmt.Println("status", response.Payload.Payment.Entity.Status)
 	//put all the response data to paymentresponse struct
 	
 
 	var payment mod.Payment
-	
+	err1:=db.DB.Where("order_id=?",response.Payload.Payment.Entity.OrderID).First(&payment).Error
+	if err1!=nil{
+		fmt.Println("error is ",err1)
+	}
 	//updates after response
 	payment.Payment_Id=response.Payload.Payment.Entity.ID
-	payment.Amount=float64(response.Payload.Payment.Entity.Amount)/100
+	payment.OfferAmount=float64(response.Payload.Payment.Entity.Amount)/100
 	payment.Status=response.Payload.Payment.Entity.Status
-	db.DB.Where("order_id",response.Payload.Payment.Entity.OrderID).Updates(&payment)
-	
-	var sub mod.Subscription
 
-	sub.Payment_Id=response.Payload.Payment.Entity.ID
-	
-
+	fmt.Println("Payments is;",payment)
+	dbErr:=db.DB.Where("order_id=?",response.Payload.Payment.Entity.OrderID).Updates(&payment).Error
+	if dbErr!=nil{
+		fmt.Println("db error",dbErr)
+	}
 
 	//Signature verification
 	signature := r.Header.Get("X-Razorpay-Signature")
 	fmt.Println("signature", signature)
-	if !VerifyWebhookSignature(body, signature, "Qi5HgPzuGUeKjQMOyiTUGjs8") {
+	if !VerifyWebhookSignature(body, signature, os.Getenv("API_SecretKey")) {
 		http.Error(w, "Invalid signature", http.StatusUnauthorized)
 		return
 	} else {

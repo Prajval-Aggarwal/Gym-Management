@@ -36,7 +36,7 @@ func Fun() {
 
 	} 
 	if dbVersion.Version < 3 {
-		err := DB.AutoMigrate(&mod.Credential{})
+		err := DB.AutoMigrate(&mod.Credential{},)
 		if err != nil {
 			panic(err)
 		}
@@ -60,7 +60,7 @@ func Connect() error {
 	db.Exec("CREATE SCHEMA IF NOT EXISTS public")
 	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 
-	db.AutoMigrate(&mod.DbVersion{})
+	db.AutoMigrate(&mod.DbVersion{},&mod.Payment{})
 
 	DB = db
 	Fun()
