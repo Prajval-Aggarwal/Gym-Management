@@ -2,16 +2,15 @@ package routes
 
 import (
 	"fmt"
-	db "gym-api/Database"
 	cont "gym-api/Controllers"
+	db "gym-api/Database"
 	mod "gym-api/Models"
 	"log"
 	"net/http"
-	
 )
 
 func Routes() {
-	
+
 	fmt.Println("Listening on port:8000")
 	mux := http.NewServeMux()
 
@@ -75,6 +74,8 @@ func Routes() {
 	mux.HandleFunc("/createEquipment", cont.CreateEquipmentHandler)
 	mux.HandleFunc("/getEquipment", cont.EquimentListHandler)
 
+	//Api documentation Route
+	mux.HandleFunc("/api-doc", cont.APIdocsHandler)
 
 	//Listening to the server
 	log.Fatal(http.ListenAndServe(":8000", mux))

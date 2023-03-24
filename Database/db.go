@@ -11,10 +11,13 @@ import (
 
 var DB *gorm.DB
 
-func Fun() {
+func VersionManger() {
 	var dbVersion mod.DbVersion
-	DB.First(&dbVersion)
-
+	err := DB.First(&dbVersion).Error
+	if err != nil {
+		fmt.Println("error: ", err)
+	}
+	fmt.Println("DB version is:", dbVersion.Version)
 	if dbVersion.Version < 1 {
 		err := DB.AutoMigrate(&mod.User{}, &mod.GymEmp{}, &mod.Payment{}, &mod.Subscription{}, &mod.SubsType{}, &mod.Equipment{}, &mod.UAttendence{}, &mod.EmpAttendence{}, &mod.EmpTypes{})
 		if err != nil {
@@ -23,8 +26,9 @@ func Fun() {
 		DB.Create(&mod.DbVersion{
 			Version: 1,
 		})
-
-	} else if dbVersion.Version < 2 {
+		dbVersion.Version = 1
+	}
+	if dbVersion.Version < 2 {
 		err := DB.AutoMigrate(&mod.Slot{})
 		if err != nil {
 			panic(err)
@@ -32,8 +36,10 @@ func Fun() {
 		DB.Where("version=?", dbVersion.Version).Updates(&mod.DbVersion{
 			Version: 2,
 		})
+		dbVersion.Version = 2
 
-	} else if dbVersion.Version < 3 {
+	}
+	if dbVersion.Version < 3 {
 		err := DB.AutoMigrate(&mod.Credential{})
 		if err != nil {
 			panic(err)
@@ -41,8 +47,20 @@ func Fun() {
 		DB.Where("version=?", dbVersion.Version).Updates(&mod.DbVersion{
 			Version: 3,
 		})
-	} else {
-		fmt.Println("Database is currently in its latest version")
+		dbVersion.Version = 3
+	}
+	if dbVersion.Version < 4 {
+		fmt.Println("ajkas", DB.Migrator().HasTable(mod.Equipment{}))
+		if DB.Migrator().HasTable(mod.Equipment{}) {
+			err := DB.Migrator().AddColumn(&mod.Equipment{}, "Weight")
+			if err != nil {
+				fmt.Println("eroor is ", err)
+			}
+		}
+		DB.Where("version=?", dbVersion.Version).Updates(&mod.DbVersion{
+			Version: 4,
+		})
+		dbVersion.Version = 4
 	}
 
 }
@@ -61,7 +79,7 @@ func Connect() error {
 	db.AutoMigrate(&mod.DbVersion{})
 
 	DB = db
-	Fun()
+	VersionManger()
 	fmt.Println("Successfully connected to database")
 	return nil
 }

@@ -50,7 +50,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err := db.DB.Where("user_name=?", credential.UserName).First(&existCred).Error
 	if err != nil {
 		fmt.Println("User do not exists please register first...")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(existCred.Password), []byte(credential.Password))
@@ -63,8 +63,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func ForgotPasswordHandler(w http.ResponseWriter, r *http.Request) {
-	expirationTime := time.Now().Add(1 * time.Minute)
+func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	expirationTime := time.Now().Add(5 * time.Minute)
+
 	fmt.Println("expiration time is: ", expirationTime)
 	var credential mod.Credential
 	username := r.URL.Query().Get("username")
@@ -75,7 +76,8 @@ func ForgotPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//check if the user is valid then only create the token
 	claims := mod.Claims{
-		Username: credential.UserName,
+		UserId:   cred.UserID,
+		Username: cred.UserName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
@@ -109,7 +111,7 @@ func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	var password = make(map[string]string)
 
 	var userCred mod.Credential
-	err = db.DB.Where("user_name=?", claims.Username).Find(&userCred).Error
+	err = db.DB.Where("user_id=?", claims.UserId).Find(&userCred).Error
 	if err != nil {
 		http.Error(w, "User not found", http.StatusInternalServerError)
 		return
@@ -122,7 +124,7 @@ func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	userCred.Password = string(bs)
 	userCred.Password = password["password"]
-	err = db.DB.Where("user_name=?", claims.Username).Updates(userCred).Error
+	err = db.DB.Where("user_id=?", claims.UserId).Updates(userCred).Error
 	if err != nil {
 		http.Error(w, "Failed to update user password", http.StatusInternalServerError)
 		return
