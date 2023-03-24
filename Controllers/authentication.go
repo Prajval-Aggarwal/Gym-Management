@@ -1,4 +1,4 @@
-package cont
+package Controllers
 
 import (
 	"encoding/json"
@@ -19,23 +19,23 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var cred mod.Credential
-	json.NewDecoder(r.Body).Decode(&cred)
+	var credential mod.Credential
+	json.NewDecoder(r.Body).Decode(&credential)
 
-	err := db.DB.Where("user_name=?", cred.UserName).First(&mod.Credential{}).Error
+	err := db.DB.Where("user_name=?", credential.UserName).First(&mod.Credential{}).Error
 	if err == nil {
 		fmt.Println("User already exist please login to move forward...")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	bs, err := bcrypt.GenerateFromPassword([]byte(cred.Password), 8)
+	bs, err := bcrypt.GenerateFromPassword([]byte(credential.Password), 8)
 	if err != nil {
 		panic(err)
 	}
-	cred.Password = string(bs)
-	db.DB.Create(&cred)
+	credential.Password = string(bs)
+	db.DB.Create(&credential)
 	w.Write([]byte("User Registerd sucessfully"))
-	json.NewEncoder(w).Encode(cred)
+	json.NewEncoder(w).Encode(credential)
 
 }
 
@@ -44,16 +44,16 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	var cred mod.Credential
-	json.NewDecoder(r.Body).Decode(&cred)
+	var credential mod.Credential
+	json.NewDecoder(r.Body).Decode(&credential)
 	var existCred mod.Credential
-	err := db.DB.Where("user_name=?", cred.UserName).First(&existCred).Error
+	err := db.DB.Where("user_name=?", credential.UserName).First(&existCred).Error
 	if err != nil {
 		fmt.Println("User do not exists please register first...")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(existCred.Password), []byte(cred.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(existCred.Password), []byte(credential.Password))
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Println("Incorrect Password")
@@ -65,10 +65,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	expirationTime := time.Now().Add(5 * time.Minute)
+
 	fmt.Println("expiration time is: ", expirationTime)
-	var cred mod.Credential
+	var credential mod.Credential
 	username := r.URL.Query().Get("username")
-	err := db.DB.Where("user_name=?", username).First(&cred).Error
+	err := db.DB.Where("user_name=?", username).First(&credential).Error
 	if err != nil {
 		w.Write([]byte("User with given username do not exists....."))
 		return
@@ -92,7 +93,7 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint("Token is:", tokenString)))
 }
 
-func ResetPassword(w http.ResponseWriter, r *http.Request) {
+func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.URL.Query().Get("token")
 

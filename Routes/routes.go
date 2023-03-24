@@ -30,29 +30,30 @@ func Routes() {
 
 	//User Routes
 	mux.HandleFunc("/createuser", cont.CreateUserHandler)
-	mux.HandleFunc("/getUsers", cont.GetUsers)
-	mux.HandleFunc("/userAttendence", cont.UserAttendence)
-	mux.HandleFunc("/getUserID", cont.GetUserbyId)
-
+	mux.HandleFunc("/getUsers", cont.GetUsersHandler)
+	mux.HandleFunc("/userAttendence", cont.UserAttendenceHandler)
+	mux.HandleFunc("/getUserID", cont.GetUserHandler)
+	
 	//Payment Routes
-	mux.HandleFunc("/makepayment", cont.MakepaymentHandler)
+	mux.HandleFunc("/makepayment", cont.MakePaymentHandler)
+	mux.HandleFunc("/payment/status", cont.PaymentStatusHandler)
 
 	//subscription Routes
-	mux.HandleFunc("/createsubs", cont.CreateSubsHandler)
-	mux.HandleFunc("/end-memberShip", cont.EndSubscription)
-	mux.HandleFunc("/updateMemberShip", cont.UpdateSubscription)
+	mux.HandleFunc("/createsubs", cont.CreatSubscriptionHandler)
+	mux.HandleFunc("/end-memberShip", cont.EndSubscriptionHandler)
+	mux.HandleFunc("/updateMemberShip", cont.UpdateSubscriptionHandler)
 	mux.HandleFunc("/getMemberShip", cont.GetSubscriptionsHandler)
 
 	//Employee Routes
-	mux.HandleFunc("/createEmp", cont.CreateEmphandler)
-	mux.HandleFunc("/getEmp", cont.GetEmployees)
-	mux.HandleFunc("/updateEmp", cont.SetEmpRole)
-	mux.HandleFunc("/getEmpRole", cont.GetEmpRole)
-	mux.HandleFunc("/empWithuser", cont.GetEmployeesWithUsers)
-	mux.HandleFunc("/empAttendence", cont.EmpAttendence)
+	mux.HandleFunc("/createEmp", cont.CreateEmployeehandler)
+	mux.HandleFunc("/getEmp", cont.GetEmployeesHandler)
+	mux.HandleFunc("/updateEmp", cont.EmployeeRoleHandler)
+	mux.HandleFunc("/getEmpRole", cont.GetEmployeeRoleHandler)
+	mux.HandleFunc("/empWithuser", cont.GetUsersWithEmployeesHandler)
+	mux.HandleFunc("/empAttendence", cont.EmployeeAttendenceHandler)
 
 	//Prices routes
-	mux.HandleFunc("/getPrice", cont.GetPrices)
+	mux.HandleFunc("/getPrice", cont.GetPricesHandler)
 	mux.HandleFunc("/priceUpdate", cont.PriceUpdateHandler)
 
 	//slots routes
@@ -61,19 +62,17 @@ func Routes() {
 	//Authentication Handler
 	mux.HandleFunc("/register", cont.RegisterHandler)
 	mux.HandleFunc("/login", cont.LoginHandler)
-	mux.HandleFunc("/forgotPassword", cont.ForgotPassword)
-	mux.HandleFunc("/resetPassword", cont.ResetPassword)
+	mux.HandleFunc("/forgotPassword", cont.ForgotPasswordHandler)
+	mux.HandleFunc("/resetPassword", cont.ResetPasswordHandler)
 
 	//OTP verfication routes
-	mux.HandleFunc("/sendotp", cont.SendOTP)
-	mux.HandleFunc("/verifyotp", cont.CheckOTP)
+	mux.HandleFunc("/sendotp", cont.SendOTPHandler)
+	mux.HandleFunc("/verifyotp", cont.CheckOTPHandler)
 
-	// stripe payment
-	mux.HandleFunc("/payment/status", cont.HandlePaymentStatus)
 
 	//Equipment routes
-	mux.HandleFunc("/getEquipment", cont.GetEquipList)
-	mux.HandleFunc("/createEquipment", cont.CreateEquipHandler)
+	mux.HandleFunc("/createEquipment", cont.CreateEquipmentHandler)
+	mux.HandleFunc("/getEquipment", cont.EquimentListHandler)
 
 	//Api documentation Route
 	mux.HandleFunc("/api-doc", cont.APIdocsHandler)

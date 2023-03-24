@@ -1,4 +1,4 @@
-package cont
+package Controllers
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func CreateEquipHandler(w http.ResponseWriter, r *http.Request) {
+func CreateEquipmentHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	var equipment mod.Equipment
@@ -17,7 +17,7 @@ func CreateEquipHandler(w http.ResponseWriter, r *http.Request) {
 	result := db.DB.Where("equip_name =?", equipment.Equip_Name).Updates(&equipment)
 	if result.Error != nil {
 		fmt.Println("error in DB")
-	} else if result.RowsAffected == 0 { //if the equip_name is not in record then create new record
+	} else if result.RowsAffected == 0 { 
 		db.DB.Create(&equipment)
 		fmt.Fprint(w, "New Equipment added")
 		json.NewEncoder(w).Encode(&equipment)
@@ -30,7 +30,7 @@ func CreateEquipHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetEquipList(w http.ResponseWriter, r *http.Request) {
+func EquimentListHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
