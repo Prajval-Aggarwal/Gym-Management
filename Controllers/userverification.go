@@ -1,4 +1,4 @@
-package cont
+package Controllers
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ var client *twilio.RestClient = twilio.NewRestClientWithParams(twilio.ClientPara
 	Password: cons.TWILIO_AUTH_TOKEN,
 })
 
-func sendOtp(to string) {
+func SendOtp(to string) {
 	params := &openapi.CreateVerificationParams{}
 	params.SetTo(to)
 	params.SetChannel("sms")
@@ -28,7 +28,7 @@ func sendOtp(to string) {
 		fmt.Printf("Sent verification '%s'\n", *resp.Sid)
 	}
 }
-func checkOtp(to string, code string) bool {
+func CheckOtp(to string, code string) bool {
 	params := &openapi.CreateVerificationCheckParams{}
 	params.SetTo(to)
 	params.SetCode(code)
@@ -44,26 +44,26 @@ func checkOtp(to string, code string) bool {
 	}
 }
 
-func SendOTP(w http.ResponseWriter, r *http.Request) {
+func SendOTPHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	phNumber := r.URL.Query().Get("number")
 
-	sendOtp("+91" + phNumber)
+	SendOtp("+91" + phNumber)
 	w.Write([]byte("OTP sent successfully "))
 
 }
 
-func CheckOTP(w http.ResponseWriter, r *http.Request) {
+func CheckOTPHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	phNumber := r.URL.Query().Get("number")
 	var otp = make(map[string]string)
 	json.NewDecoder(r.Body).Decode(&otp)
-	if checkOtp("+91"+phNumber, otp["otp"]) {
+	if CheckOtp("+91"+phNumber, otp["otp"]) {
 		w.Write([]byte("Phone Number verified sucessfully"))
 	} else {
 		w.Write([]byte("Verifictaion failed"))
 	}
 }
 
-// email api key := "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"
+
