@@ -3,16 +3,16 @@ package cont
 import (
 	"encoding/json"
 	"fmt"
-	cons "gym-api/Utils"
 	"net/http"
+	"os"
 
 	"github.com/twilio/twilio-go"
 	openapi "github.com/twilio/twilio-go/rest/verify/v2"
 )
 
 var client *twilio.RestClient = twilio.NewRestClientWithParams(twilio.ClientParams{
-	Username: cons.TWILIO_ACCOUNT_SID,
-	Password: cons.TWILIO_AUTH_TOKEN,
+	Username: os.Getenv("TWILIO_ACCOUNT_SID"),
+	Password: os.Getenv("TWILIO_AUTH_TOKEN"),
 })
 
 func SendOtp(to string) {
@@ -20,7 +20,7 @@ func SendOtp(to string) {
 	params.SetTo(to)
 	params.SetChannel("sms")
 
-	resp, err := client.VerifyV2.CreateVerification(cons.VERIFY_SERVICE_SID, params)
+	resp, err := client.VerifyV2.CreateVerification(os.Getenv("VERIFY_SERVICE_SID"), params)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -32,7 +32,7 @@ func CheckOtp(to string, code string) bool {
 	params := &openapi.CreateVerificationCheckParams{}
 	params.SetTo(to)
 	params.SetCode(code)
-	resp, err := client.VerifyV2.CreateVerificationCheck(cons.VERIFY_SERVICE_SID, params)
+	resp, err := client.VerifyV2.CreateVerificationCheck(os.Getenv("VERIFY_SERVICE_SID"), params)
 
 	if err != nil {
 		fmt.Println("Error is :", err)

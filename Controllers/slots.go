@@ -11,10 +11,10 @@ import (
 )
 
 func SlotDistribution() {
-	startTime, _ := time.Parse("15:04", cons.Start_time)
-	endTime, _ := time.Parse("15:04", cons.End_time)
+	startTime, _ := time.Parse("15:04", cons.START_TIME)
+	endTime, _ := time.Parse("15:04", cons.END_TIME)
 	diff := endTime.Sub(startTime)
-	noOfSlots := int(diff.Hours() / cons.SlotLen)
+	noOfSlots := int(diff.Hours() / cons.SLOT_LEN)
 
 	//fmt.Println("number of slots is:", noOfSlots)
 	slotStartTime := startTime

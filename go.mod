@@ -1,10 +1,10 @@
 module gym-api
 
-go 1.19
+go 1.18
 
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/stripe/stripe-go v70.15.0+incompatible
+	github.com/joho/godotenv v1.5.1
 	github.com/stripe/stripe-go/v72 v72.122.0
 	github.com/twilio/twilio-go v1.3.5
 	golang.org/x/crypto v0.6.0

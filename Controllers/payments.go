@@ -69,7 +69,7 @@ func StripePayment(amount float64, w http.ResponseWriter) (pi, pi1 *stripe.Payme
 		w.Write([]byte("Payment requires more actions"))
 	}
 
-
+	var payment mod.Payment
 	payment.Payment_Id = pi.ID
 	method := pi.PaymentMethodTypes
 	payment.Payment_Type = method[0]

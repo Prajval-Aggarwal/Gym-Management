@@ -44,7 +44,6 @@ func Routes() {
 	mux.HandleFunc("/updateMemberShip", cont.UpdateSubscriptionHandler)
 	mux.HandleFunc("/getMemberShip", cont.GetSubscriptionsHandler)
 
-
 	mux.HandleFunc("/createEmp", cont.CreateEmployeehandler)
 	mux.HandleFunc("/getEmp", cont.GetEmployeesHandler)
 	mux.HandleFunc("/updateEmp", cont.EmployeeRoleHandler)
@@ -56,8 +55,6 @@ func Routes() {
 	//Prices routes
 	mux.HandleFunc("/getPrice", cont.GetPricesHandler)
 	mux.HandleFunc("/priceUpdate", cont.PriceUpdateHandler)
-	
-
 
 	//slots routes
 	mux.HandleFunc("/slotUpdate", cont.SlotUpdateHandler)
@@ -73,7 +70,7 @@ func Routes() {
 	mux.HandleFunc("/verifyotp", cont.CheckOTPHandler)
 
 	//Equipment routes
-	mux.HandleFunc("/createEquipment", cont.CreateEquipmentHandler)
+	mux.HandleFunc("/createEquipment", cont.UpdateEquipmentHandler)
 	mux.HandleFunc("/getEquipment", cont.EquimentListHandler)
 
 	//Api documentation Route

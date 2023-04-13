@@ -5,14 +5,13 @@ import (
 	"fmt"
 	db "gym-api/Database"
 	mod "gym-api/Models"
-	cons "gym-api/Utils"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
-
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -85,7 +84,7 @@ func ForgotPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(cons.SecretKey)
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		fmt.Println("error is :", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -101,7 +100,7 @@ func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	claims := &mod.Claims{}
 
 	parsedToken, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return cons.SecretKey, nil
+		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
 	if err != nil || !parsedToken.Valid {
 		http.Error(w, "Invalid or expired token", http.StatusBadRequest)
