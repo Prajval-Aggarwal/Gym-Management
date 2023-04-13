@@ -15,11 +15,12 @@ func GetEmployeesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var emps []mod.GymEmp
-	db.DB.Find(&emps)
-	json.NewEncoder(w).Encode(&emps)
+	var employees []mod.GymEmp
+	db.DB.Find(&employees)
+	json.NewEncoder(w).Encode(&employees)
 
 }
+
 
 func CreateEmployeeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -27,34 +28,35 @@ func CreateEmployeeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var emp mod.GymEmp
-	json.NewDecoder(r.Body).Decode(&emp)
+	var employees mod.GymEmp
+	json.NewDecoder(r.Body).Decode(&employees)
 
 	// checking whether the employee role is from the emp_types table or not
 	var emptypes mod.EmpTypes
 	db.DB.Find(&emptypes)
 
-	db.DB.Create(&emp)
+	db.DB.Create(&employees)
 
-	json.NewEncoder(w).Encode(emp)
+	json.NewEncoder(w).Encode(employees)
 }
 
 func EmployeeRoleHandler(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != "PUT" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var emprole mod.EmpTypes
-	err := json.NewDecoder(r.Body).Decode(&emprole)
+	var employeeRole mod.EmpTypes
+	err := json.NewDecoder(r.Body).Decode(&employeeRole)
 	if err != nil {
 		panic(err)
 	}
-	result := db.DB.Model(&mod.EmpTypes{}).Where("role =?", emprole.Role).Updates(&emprole)
+	result := db.DB.Model(&mod.EmpTypes{}).Where("role =?", employeeRole.Role).Updates(&employeeRole)
 	if result.Error != nil {
 		fmt.Println("error in DB")
 	} else if result.RowsAffected == 0 { //if the subs_name is not in record then create new record
-		db.DB.Create(&emprole)
+		db.DB.Create(&employeeRole)
 		fmt.Fprint(w, "New Employee type added")
 
 	} else {
@@ -70,23 +72,25 @@ func GetEmployeeRoleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var emprole []mod.EmpTypes
-	db.DB.Find(&emprole)
-	json.NewEncoder(w).Encode(&emprole)
+	var employeeRoles []mod.EmpTypes
+	db.DB.Find(&employeeRoles)
+	json.NewEncoder(w).Encode(&employeeRoles)
 }
 
+
 func GetMembersWithUsersHandler(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Println("You are watching employees having users under them")
-	var emp []mod.EmpWithUser
+	var employee []mod.EmpWithUser
 	// db.DB.Find(&emp).Where("role=?","Trainer").First(&emp)
 	query := "SELECT gym_emps.emp_id , gym_emps.emp_name , COUNT(gym_emps.emp_id) as alotted_members FROM gym_emps LEFT JOIN subscriptions ON subscriptions.emp_id = gym_emps.emp_id GROUP BY gym_emps.emp_id HAVING gym_emps.role = 'Trainer';"
-	db.DB.Raw(query).Scan(&emp)
-	json.NewEncoder(w).Encode(&emp)
+	db.DB.Raw(query).Scan(&employee)
+	json.NewEncoder(w).Encode(&employee)
 }
 func EmployeeAttendenceHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -96,10 +100,10 @@ func EmployeeAttendenceHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	now := time.Now()
 
-	var temp mod.EmpAttendence
-	temp.User_Id = id
-	temp.Present = "Present"
-	temp.Date = now.Format("02 Jan 2006")
-	db.DB.Create(&temp)
+	var employee mod.EmpAttendence
+	employee.User_Id = id
+	employee.Present = "Present"
+	employee.Date = now.Format("02 Jan 2006")
+	db.DB.Create(&employee)
 
 }

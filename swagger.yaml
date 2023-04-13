@@ -1,0 +1,693 @@
+swagger: "2.0"
+info:
+  title: GYM API
+  description: This is the API documentation for gym application
+  version: 1.0.0
+
+host: c461-122-160-165-213.in.ngrok.io
+schemes:
+  - https
+tags:
+  - name: Authentication
+    description: Contains login,register like handlers
+  - name: User
+    description: Everything about your User
+  - name: Subscription
+  - name: Payments
+    description: Make a payment to choosen subscription
+  - name: Price
+    description: Everything about prices
+  - name: Slot
+    description: This contains the slot update handler only
+  - name: Employee
+    description: Everything about employee
+  - name: OTP
+    description: OTP verifying handlers
+  - name: Equipment
+paths:
+  #Users
+  /getUsers:
+    get:
+      summary: Returns a list of users.
+      produces:
+        - application/json
+      tags:
+        - User
+      responses:
+        200:
+          description: List of users with their subscription and payment data
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                description: Unique auto generated user id
+              name:
+                type: string
+                description: User name
+              gender:
+                type: string
+                description: Gender of the user
+              amount:
+                type: integer
+              offer_amount:
+                type: integer
+              payment_type:
+                type: string
+              payment_id:
+                type: string
+              emp_id:
+                type: string
+              subs_name:
+                type: string
+              start_date:
+                type: string
+              end_date:
+                type: string
+              duration:
+                type: integer
+              Deleted_at:
+                type: string
+  /getUserID:
+    get:
+      tags:
+        - User
+      summary: Return a single user
+      description: This route return a single user by its id
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: this the id of user whose details are to be fetched
+      responses:
+        200:
+          description: A user with provided id
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                description: Unique auto generated user id
+              name:
+                type: string
+                description: User name
+              gender:
+                type: string
+                description: Gender of the user
+              amount:
+                type: integer
+              offer_amount:
+                type: integer
+              payment_type:
+                type: string
+              payment_id:
+                type: string
+              emp_id:
+                type: string
+              subs_name:
+                type: string
+              start_date:
+                type: string
+              end_date:
+                type: string
+              duration:
+                type: integer
+              Deleted_at:
+                type: string
+
+  /createuser:
+    post:
+      tags:
+        - User
+      summary: Creates User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: The user to create
+          schema:
+            type: object
+            required:
+              - name
+              - gender
+              - phoneNumber
+            properties:
+              name:
+                type: string
+              gender:
+                type: string
+              phoneNumber:
+                type: string
+      responses:
+        201:
+          description: A User object
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                description: Unique auto generated user id
+              name:
+                type: string
+                description: User name
+              gender:
+                type: string
+                description: Gender of the user
+              phoneNumber:
+                type: string
+                description: Phone Number of the user
+            example:
+              user_id: f7765b77-8379-4771-83fa-a2a63b52b711
+              name: Onkar
+              gender: Male
+              phoneNumber: "457891656"
+
+  /userAttendence:
+    post:
+      tags:
+        - User
+      summary: Marks the user present for the current day
+      description: This route marks the user preset for that current day i.e he came to gym
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: this the id of user whose attendence is to be marked
+      responses:
+        200:
+          description: User Marked present
+
+  #Subscription
+  /createsubs:
+    post:
+      tags:
+        - Subscription
+      summary: Alots a membership to the user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Id of the user who you want to alot a membership
+        - in: body
+          name: subs
+          schema:
+            type: object
+            required:
+              - subs_name
+              - duration
+              - slot_id
+            properties:
+              subs_name:
+                type: string
+              duration:
+                type: integer
+              slot_id:
+                type: integer
+            example:
+              subs_name: Gold
+              duration: 6
+              slot_id: 1
+      responses:
+        200:
+          description: OK
+
+  /end-membership:
+    delete:
+      tags:
+        - Subscription
+      summary: This routes ends the subscription for current user
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Id of the user whose membership we want to end
+      responses:
+        400:
+          description: BAD REQUEST
+        200:
+          description: OK
+  /updateMembership:
+    post:
+      tags:
+        - Subscription
+      summary: This routes updates the subscription for current user
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Id of the user whose membership we want to end
+        - in: body
+          name: subs body
+          schema:
+            type: object
+            required:
+              - subs_name
+            properties:
+              subs_name:
+                type: string
+              duration:
+                type: integer
+
+      responses:
+        400:
+          description: BAD REQUEST
+        200:
+          description: OK
+
+  /getMembership:
+    get:
+      tags:
+        - Subscription
+      summary: Gives the list of users who have taken a membership
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+  # Prices handlers
+  /getPrice:
+    get:
+      summary: Returns a list of subscription with their prices
+      produces:
+        - application/json
+      tags:
+        - Price
+      responses:
+        200:
+          description: OK
+
+  /priceUpdate:
+    post:
+      tags:
+        - Price
+      summary: Updates the price of membership
+      description: This handler updates the
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: The user to create
+          schema:
+            type: object
+            required:
+              - subs_name
+              - price
+            properties:
+              subs_name:
+                type: string
+              price:
+                type: integer
+            example:
+              subs_name: gold
+              price: 2000
+      responses:
+        400:
+          description: Bad request
+        201:
+          description: Created User successfully
+  #Payment Handler
+  /makepayment:
+    post:
+      tags:
+        - Payments
+      summary: Make a payment to for given id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Makes a payment for given user_id
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: this is the id of user for whom payment is done
+        - in: body
+          name: payment
+          description: The user to create
+          schema:
+            type: object
+            required:
+              - payment_type
+            properties:
+              payment_type:
+                type: string
+            example:
+              payment_type: Credit card
+      responses:
+        200:
+          description: OK
+  #Slot Handler
+  /slotUpdate:
+    post:
+      tags:
+        - Slot
+      summary: Updates the slot number for the user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: user id
+          type: string
+          description: this is the id of user for whom slot is to be updated
+        - in: body
+          name: slot
+          schema:
+            type: object
+            required:
+              - slot_id
+            properties:
+              slot_id:
+                type: integer
+            example:
+              slot_id: 1
+      responses:
+        200:
+          description: OK
+  #Empoyee handler
+  /getEmp:
+    get:
+      summary: Returns a list of employees working in gym .
+      produces:
+        - application/json
+      tags:
+        - Employee
+      responses:
+        200:
+          description: OK
+  /getEmpRole:
+    get:
+      summary: Returns a list of roles employees working in gym .
+      produces:
+        - application/json
+      tags:
+        - Employee
+      responses:
+        200:
+          description: OK
+  /createEmp:
+    post:
+      tags:
+        - Employee
+      summary: Creates an data entry for employee working in gym
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: emp
+          schema:
+            type: object
+            required:
+              - emp_name
+              - gender
+              - role
+            properties:
+              emp_name:
+                type: string
+              gender:
+                type: string
+              role:
+                type: string
+            example:
+              emp_name: Aman
+              gender: Male
+              role: Trainer
+      responses:
+        200:
+          description: OK
+  /empWithuser:
+    get:
+      summary: Returns list of trainers with number of people they are training.
+      produces:
+        - application/json
+      tags:
+        - Employee
+      responses:
+        200:
+          description: OK
+
+  /setEmpRole:
+    post:
+      tags:
+        - Employee
+      summary: To set the role details
+      description: This handler is to add what type of people work in te gym like trainer, Security guard, etc. and their salay is decided
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: EmpRole
+          schema:
+            required:
+              - role
+              - salary
+            properties:
+              role:
+                type: string
+              salary:
+                type: integer
+            example:
+              role: Trainer
+              salary: 15000
+      responses:
+        200:
+          description: OK
+
+  /empAttendence:
+    post:
+      tags:
+        - Employee
+      summary: Marks the employee present for the current day
+      description: This route marks the employee present for that current day i.e he came to gym
+      parameters:
+        - in: query
+          name: employee id
+          type: string
+          description: this the id of employee whose attendence is to be marked
+      responses:
+        200:
+          description: OK
+  #Auth Handler
+  /register:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      summary: Register User for login
+      tags:
+        - Authentication
+      parameters:
+        - in: body
+          name: admin
+          schema:
+            type: object
+            required:
+              - username
+              - password
+              - contact
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+              contact:
+                type: string
+            example:
+              username: Sahil
+              password: Dummy Password
+              contact: "1234567898"
+      responses:
+        200:
+          description: An user object
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+                description: Gives hashed password
+              contact:
+                type: string
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login handler
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: admin
+          schema:
+            type: object
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+            example:
+              username: Sahil
+              password: Dummy Password
+      responses:
+        200:
+          description: Logged in sucessfull
+        401:
+          description: Incorrect Credentials
+
+  /forgotPassword:
+    post:
+      tags:
+        - Authentication
+      summary: Forgot Password Handler
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: username
+          type: string
+          description: username o user whose password is to be changed or reset
+      responses:
+        400:
+          description: User do not exists
+        200:
+          description: A Unique token is generated
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+
+  /resetPassword:
+    put:
+      tags:
+        - Authentication
+      summary: Password reset handler
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: token
+          type: string
+          description: token from which user_id will be extracted for updating the password
+        - in: body
+          name: reset
+          schema:
+            required:
+              - password
+            properties:
+              password:
+                type: string
+            example:
+              password: New Password
+      responses:
+        200:
+          description: Password updates sucessfully
+
+  #OTP routes
+  /sendotp:
+    post:
+      tags:
+        - OTP
+      summary: Sends OTP to registered mobile number of the user
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: number
+          type: string
+          description: Number to which OTP is to be send
+      responses:
+        200:
+          description: OK
+
+  /verifyotp:
+    post:
+      tags:
+        - OTP
+      summary: verifies the otp
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: number
+          type: string
+          description: Number to which OTP is sent
+        - in: body
+          name: otpBody
+          schema:
+            required:
+              - otp
+            properties:
+              otp:
+                type: string
+            example:
+              otp: "123456"
+      responses:
+        200:
+          description: OK
+
+  #Equipment
+  /getEquipment:
+    get:
+      tags:
+        - Equipment
+      summary: Returns the list of equipments present in the gym
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+  /createEquipment:
+    post:
+      tags:
+        - Equipment
+      summary: Add equipment to the gym with its quantity
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: Equiment Data
+          schema:
+            required:
+              - equip_name
+              - quantity
+            properties:
+              euip_name:
+                type: string
+              quantity:
+                type: integer
+            example:
+              equip_name: Dumbells
+              quantity: 6
+      responses:
+        200:
+          description: OK

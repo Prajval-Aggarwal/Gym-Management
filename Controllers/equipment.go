@@ -10,14 +10,15 @@ import (
 
 func UpdateEquipmentHandler(w http.ResponseWriter, r *http.Request) {
 
+
 	w.Header().Set("Content-Type", "application/json")
 	var equipment mod.Equipment
 	json.NewDecoder(r.Body).Decode(&equipment)
 
-	result := db.DB.Model(&mod.Equipment{}).Where("equip_name =?", equipment.Equip_Name).Updates(&equipment)
+	result := db.DB.Where("equip_name =?", equipment.Equip_Name).Updates(&equipment)
 	if result.Error != nil {
 		fmt.Println("error in DB")
-	} else if result.RowsAffected == 0 { //if the equip_name is not in record then create new record
+	} else if result.RowsAffected == 0 {
 		db.DB.Create(&equipment)
 		fmt.Fprint(w, "New Equipment added")
 		json.NewEncoder(w).Encode(&equipment)
@@ -30,7 +31,7 @@ func UpdateEquipmentHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetEquipList(w http.ResponseWriter, r *http.Request) {
+func EquimentListHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return

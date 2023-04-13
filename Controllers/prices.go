@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func GetPrices(w http.ResponseWriter, r *http.Request) {
+func GetPricesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var memberhips []mod.SubsType
 	db.DB.Find(&memberhips)
@@ -26,18 +26,20 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var memShip mod.SubsType
+	var membership mod.SubsType
 
-	err := json.NewDecoder(r.Body).Decode(&memShip)
+	err := json.NewDecoder(r.Body).Decode(&membership)
 	if err != nil {
 		panic(err)
 	}
+
 
 	result := db.DB.Model(&mod.SubsType{}).Where("subs_name =?", memShip.Subs_Name).Updates(&memShip)
 	if result.Error != nil {
 		fmt.Println("error in DB")
 	} else if result.RowsAffected == 0 { //if the subs_name is not in record then create new record
 		db.DB.Create(&memShip)
+
 		fmt.Fprint(w, "New subscription type added")
 
 	} else {
@@ -46,4 +48,6 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+
 

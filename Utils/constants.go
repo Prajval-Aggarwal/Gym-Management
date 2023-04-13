@@ -1,4 +1,4 @@
-package cons
+package constants
 
 const Start_time = "06:00"
 const End_time = "22:00"
@@ -11,3 +11,6 @@ const Port = "5432"
 const User = "postgres"
 const Password = "Onkar17082001"
 const Dbname = "gym_1"
+
+var SecretKey = []byte("My_Key")
+
