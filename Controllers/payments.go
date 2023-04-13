@@ -69,6 +69,11 @@ func StripePayment(amount float64, w http.ResponseWriter) (pi, pi1 *stripe.Payme
 		w.Write([]byte("Payment requires more actions"))
 	}
 
+
+	payment.Payment_Id = pi.ID
+	method := pi.PaymentMethodTypes
+	payment.Payment_Type = method[0]
+
 	return pi, pi1
 
 }
@@ -121,6 +126,7 @@ func MakePaymentHandler(w http.ResponseWriter, r *http.Request) {
 	payment.User_Id = id
 	pi, pi1 := StripePayment(billamount, w)
 	payment.Payment_Id = pi.ID
+
 	// Return the payment status
 	payment.Status = string(pi1.Status)
 	db.DB.Create(&payment)

@@ -33,11 +33,13 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	result := db.DB.Model(&mod.SubsType{}).Where("subs_name =?", membership.Subs_Name).Updates(&membership)
+
+	result := db.DB.Model(&mod.SubsType{}).Where("subs_name =?", memShip.Subs_Name).Updates(&memShip)
 	if result.Error != nil {
 		fmt.Println("error in DB")
 	} else if result.RowsAffected == 0 { //if the subs_name is not in record then create new record
-		db.DB.Create(&membership)
+		db.DB.Create(&memShip)
+
 		fmt.Fprint(w, "New subscription type added")
 
 	} else {
@@ -46,3 +48,6 @@ func PriceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+
+

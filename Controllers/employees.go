@@ -21,7 +21,8 @@ func GetEmployeesHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateEmployeehandler(w http.ResponseWriter, r *http.Request) {
+
+func CreateEmployeeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -76,7 +77,9 @@ func GetEmployeeRoleHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&employeeRoles)
 }
 
-func GetUsersWithEmployeesHandler(w http.ResponseWriter, r *http.Request) {
+
+func GetMembersWithUsersHandler(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return

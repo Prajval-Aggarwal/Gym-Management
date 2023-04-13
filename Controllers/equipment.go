@@ -8,7 +8,8 @@ import (
 	"net/http"
 )
 
-func CreateEquipmentHandler(w http.ResponseWriter, r *http.Request) {
+func UpdateEquipmentHandler(w http.ResponseWriter, r *http.Request) {
+
 
 	w.Header().Set("Content-Type", "application/json")
 	var equipment mod.Equipment
