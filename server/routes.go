@@ -40,4 +40,10 @@ func ConfigureRoutes(server *Server) {
 	//Payment Routes
 	server.engine.POST("/createPayment", handler.MakePaymentHandler)
 
+	//Auth routes
+	server.engine.POST("/adminRegister", handler.AdminRegisterHandler)
+	server.engine.POST("/userRegister", handler.UserRegisterHandler)
+	server.engine.POST("sendOtp", handler.SendOtpHandler)
+	server.engine.POST("/verifyOtp", handler.VerifyOtpHandler)
+
 }

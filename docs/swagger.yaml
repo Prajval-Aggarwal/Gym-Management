@@ -1,0 +1,8 @@
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a API documnetation for gym management
+  title: Gym Managment App
+  version: 1.0.0
+paths: {}
+swagger: "2.0"
