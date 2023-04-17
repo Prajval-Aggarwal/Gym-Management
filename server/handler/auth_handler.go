@@ -41,27 +41,14 @@ func VerifyOtpHandler(context *gin.Context) {
 
 }
 
-func UserRegisterHandler(context *gin.Context) {
-	utils.SetHeader(context)
-	var userRequest request.RegisterRequest
-	utils.RequestDecoding(context, &userRequest)
-	err := validation.CheckValidation(&userRequest)
-	if err != nil {
-		response.ErrorResponse(context, 400, err.Error())
-		return
-	}
-	authentication.UserRegisterService(context, userRequest)
-}
+
 
 func LogoutHandler(context *gin.Context) {
-	cookie, err := context.Request.Cookie("token")
+	cookie, err := context.Request.Cookie("cookie")
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
 		return
 	}
-	tokenString := cookie.Value
-	fmt.Println("token in the cookies is", tokenString)
-
-	//create its service blacklist the token and expire the cookie
+	authentication.LogoutService(context , cookie.Value)
 
 }

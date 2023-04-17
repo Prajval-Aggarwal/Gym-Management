@@ -2,8 +2,8 @@ package provider
 
 import (
 	"fmt"
+	"gym/server/model"
 	"gym/server/response"
-	"gym/server/utils"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -17,14 +17,7 @@ type Claims struct {
 }
 
 //Generate JWT Token
-func GenerateToken(id string, role string, context *gin.Context) string {
-	claims := Claims{
-		Id:   id,
-		Role: role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(utils.TOKENEXPIRATIONDURATION),
-		},
-	}
+func 	GenerateToken(claims model.Claims, context *gin.Context) string {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -35,7 +28,6 @@ func GenerateToken(id string, role string, context *gin.Context) string {
 	}
 	return tokenString
 }
-
 
 //Decode Token function
 func DecodeToken(tokenString string) (Claims, error) {
@@ -62,12 +54,12 @@ func SetCookie(context *gin.Context, tokenString string) {
 		"cookie",
 		tokenString,
 		7200,
-		"",
-		"",
-		true,
+		"/",
+		"localhost",
+		false,
 		true,
 	)
-	
+
 	response.ShowResponse(
 		"Success",
 		200,
@@ -80,20 +72,20 @@ func SetCookie(context *gin.Context, tokenString string) {
 //Delete cookie handler
 func DeleteCookie(context *gin.Context) {
 	context.SetCookie(
-        "cookie",
-        "",
-        -1, 
-        "",
-        "",
-        false,
-        true,
-    )
+		"cookie",
+		"",
+		-1,
+		"",
+		"",
+		false,
+		false,
+	)
 
-    response.ShowResponse(
-        "Success",
-        200,
-        "Cookie deleted successfully",
-        "",
-        context,
-    )
+	response.ShowResponse(
+		"Success",
+		200,
+		"Cookie deleted successfully",
+		"",
+		context,
+	)
 }

@@ -17,7 +17,7 @@ func AutoMigrateDatabase(db *gorm.DB) {
 	}
 	fmt.Println("db version is:", dbVersion.Version)
 	if dbVersion.Version < 1 {
-		err := db.AutoMigrate(&model.User{}, &model.GymEmp{}, &model.Payment{}, &model.Subscription{}, &model.Membership{}, &model.Equipment{}, &model.UAttendence{}, &model.EmpAttendence{}, &model.EmpTypes{})
+		err := db.AutoMigrate(&model.User{}, &model.GymEmp{}, &model.Payment{}, &model.Subscription{}, &model.Membership{}, &model.Equipment{}, &model.UAttendence{}, &model.EmpAttendence{}, &model.EmpTypes{} , &model.BlackListedToken{})
 		if err != nil {
 			panic(err)
 		}
