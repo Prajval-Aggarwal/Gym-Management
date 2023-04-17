@@ -16,7 +16,6 @@ func SendOtpHandler(context *gin.Context) {
 	utils.RequestDecoding(context, &phoneNumber)
 	fmt.Println("phoneNumber is", phoneNumber)
 	authentication.SendOtpService(context, phoneNumber)
-
 }
 
 func VerifyOtpHandler(context *gin.Context) {
@@ -35,5 +34,4 @@ func LogoutHandler(context *gin.Context) {
 		return
 	}
 	authentication.LogoutService(context, cookie.Value)
-
 }

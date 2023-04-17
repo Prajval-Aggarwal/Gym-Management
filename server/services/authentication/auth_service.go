@@ -26,6 +26,32 @@ func TwilioInit(password string) {
 	})
 }
 
+func AdminRegisterService(context *gin.Context, adminRequest request.RegisterRequest) {
+
+	var credential model.Credential
+	credential.UserName = adminRequest.Username
+	credential.Contact = adminRequest.Contact
+	credential.Role = "admin"
+
+	if db.RecordExist("credentials", adminRequest.Contact) {
+		response.ErrorResponse(context, 400, "Admin already registerd")
+		return
+	}
+
+	if db.RecordExist("users", adminRequest.Contact) {
+		response.ErrorResponse(context, 400, "Admin cannot register as user")
+		return
+	}
+
+	err := db.CreateRecord(&credential)
+	if err != nil {
+		response.ErrorResponse(context, 500, err.Error())
+		return
+	}
+
+	response.Response(context, 200, credential)
+}
+
 func SendOtpService(context *gin.Context, phoneNumber request.SendOtpRequest) {
 	var exists1 bool
 	query := "SELECT EXISTS(SELECT 1 FROM users WHERE contact=?)"
@@ -84,7 +110,7 @@ func VerifyOtpService(context *gin.Context, verifyOtp request.VerifyOtpRequest) 
 			tokenClaims.Role = "admin"
 		}
 		user.IsActive = true
-		db.UpdateRecord(&user , user.User_Id , "user_id")
+		db.UpdateRecord(&user, user.User_Id, "user_id")
 		tokenString := provider.GenerateToken(tokenClaims, context)
 		provider.SetCookie(context, tokenString)
 
@@ -110,20 +136,20 @@ func CheckOtp(to string, code string) bool {
 	}
 }
 
-func LogoutService(context *gin.Context , tokenString string){
-	
+func LogoutService(context *gin.Context, tokenString string) {
+
 	provider.DeleteCookie(context)
 	var blacklist model.BlackListedToken
 	blacklist.Token = tokenString
 	db.CreateRecord(&blacklist)
 
 	var user model.User
-	claims , err := provider.DecodeToken(tokenString)
-	if err!=nil{
-		response.ErrorResponse(context , 400 , err.Error())
+	claims, err := provider.DecodeToken(tokenString)
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
 	}
-	db.FindById(&user , &claims.RegisteredClaims.ID , "user_id")
+	db.FindById(&user, &claims.RegisteredClaims.ID, "user_id")
 	user.IsActive = false
-	db.UpdateRecord(&user ,&claims.RegisteredClaims.ID, "user_id" )
+	db.UpdateRecord(&user, &claims.RegisteredClaims.ID, "user_id")
 
 }

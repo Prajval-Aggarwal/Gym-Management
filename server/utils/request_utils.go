@@ -22,7 +22,7 @@ func RequestDecoding(context *gin.Context, data interface{}) {
 	}
 }
 
-func SetHeader(context *gin.Context){
+func SetHeader(context *gin.Context) {
 	context.Writer.Header().Set("Content-Type", "application/json")
 
 }

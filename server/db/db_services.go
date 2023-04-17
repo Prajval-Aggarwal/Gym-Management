@@ -42,7 +42,6 @@ func QueryExecutor(query string, data interface{}, args ...interface{}) error {
 		return err
 	}
 
-
 	return nil
 }
 
@@ -56,10 +55,9 @@ func DeleteRecord(data interface{}, id interface{}, columName string) error {
 
 }
 
-
-func RecordExist(tableName string , columnName string , value string)bool{
+func RecordExist(tableName string, columnName string, value string) bool {
 	var exists bool
-	query := "SELECT EXISTS(SELECT * FROM " + tableName+ " WHERE " + columnName+ " = '" + value + "')"
+	query := "SELECT EXISTS(SELECT * FROM " + tableName + " WHERE " + columnName + " = '" + value + "')"
 	db.Raw(query).Scan(&exists)
 	return exists
 }
