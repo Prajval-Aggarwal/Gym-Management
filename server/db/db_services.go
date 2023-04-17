@@ -58,7 +58,7 @@ func DeleteRecord(data interface{}, id interface{}, columName string) error {
 
 func RecordExist(tableName string, phoneNumber string) bool {
 	var exists bool
-	query := "SELECT EXISTS(SELECT * FROM "+tableName+" WHERE contact='" + phoneNumber + "')"
+	query := "SELECT EXISTS(SELECT * FROM " + tableName + " WHERE contact='" + phoneNumber + "')"
 	db.Raw(query).Scan(&exists)
 	return exists
 }

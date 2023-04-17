@@ -29,7 +29,6 @@ func SendOtpHandler(context *gin.Context) {
 	utils.RequestDecoding(context, &phoneNumber)
 	fmt.Println("phoneNumber is", phoneNumber)
 	authentication.SendOtpService(context, phoneNumber)
-
 }
 
 func VerifyOtpHandler(context *gin.Context) {
@@ -41,14 +40,19 @@ func VerifyOtpHandler(context *gin.Context) {
 
 }
 
-
-
 func LogoutHandler(context *gin.Context) {
 	cookie, err := context.Request.Cookie("cookie")
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
 		return
 	}
-	authentication.LogoutService(context , cookie.Value)
+	authentication.LogoutService(context, cookie.Value)
+
+}
+
+func GetCookie(context *gin.Context) {
+
+	cokie, _ := context.Request.Cookie("token")
+	fmt.Println("value of cookie is:", cokie)
 
 }
