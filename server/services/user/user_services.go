@@ -17,11 +17,11 @@ func CreateUserService(context *gin.Context, decodedData request.CreateUserReque
 	userCreated.Gender = decodedData.Gender
 	//phone number  check if that phone number exists in db or not
 
-	if db.RecordExist("credentials", decodedData.Contact) {
+	if db.RecordExist("credentials", "contact", decodedData.Contact) {
 		response.ErrorResponse(context, 403, "User with this phone number is not allowed to register")
 		return
 	}
-	if db.RecordExist("users", decodedData.Contact) {
+	if db.RecordExist("users", "contact", decodedData.Contact) {
 		response.ErrorResponse(context, 400, "User already exists")
 		return
 	}

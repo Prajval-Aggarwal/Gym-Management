@@ -33,12 +33,12 @@ func AdminRegisterService(context *gin.Context, adminRequest request.RegisterReq
 	credential.Contact = adminRequest.Contact
 	credential.Role = "admin"
 
-	if db.RecordExist("credentials", adminRequest.Contact) {
+	if db.RecordExist("credentials", "contact", adminRequest.Contact) {
 		response.ErrorResponse(context, 400, "Admin already registerd")
 		return
 	}
 
-	if db.RecordExist("users", adminRequest.Contact) {
+	if db.RecordExist("users", "contact", adminRequest.Contact) {
 		response.ErrorResponse(context, 400, "Admin cannot register as user")
 		return
 	}

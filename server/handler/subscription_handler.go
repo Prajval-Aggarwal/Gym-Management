@@ -10,6 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//	@Description	Creates a new subscription for the user
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Param			SubsDetails	body		request.CreateSubRequest	true	"Subscription details"
+//	@Tags			Subscription
+//	@Router			/createSubscription [post]
 func CreateSubscriptionHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
@@ -27,6 +35,14 @@ func CreateSubscriptionHandler(context *gin.Context) {
 	subscriptions.CreateSubscriptionService(context, subscriptionCreate)
 }
 
+//	@Description	Ends the subscription for the user
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Param			SubsDetails	body		request.EndSubRequest	true	"Subscription details"
+//	@Tags			Subscription
+//	@Router			/endSubscription [delete]
 func EndSubscriptionHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
@@ -44,6 +60,14 @@ func EndSubscriptionHandler(context *gin.Context) {
 	subscriptions.EndSubscriptionService(context, subscriptionEnd)
 }
 
+//	@Description	updates the subscription for the user
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Param			SubsDetails	body		request.UpdateSubRequest	true	"Subscription details"
+//	@Tags			Subscription
+//	@Router			/updateSubscription [put]
 func UpdateSubscriptionHandler(context *gin.Context) {
 	utils.SetHeader(context)
 

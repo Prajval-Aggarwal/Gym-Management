@@ -63,7 +63,8 @@ func UpdateMembershipService(context *gin.Context, updatedData model.Membership)
 
 func DeleteMembershipService(context *gin.Context, deletedData request.DeleteMembershipRequest) {
 
-	err := db.DeleteRecord("sf", deletedData.MembershipName, "mem_name")
+	query := "DELETE FROM memberships WHERE mem_name =?"
+	err := db.QueryExecutor(query, nil, deletedData.MembershipName)
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
 		return

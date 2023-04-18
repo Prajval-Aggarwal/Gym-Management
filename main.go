@@ -13,10 +13,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// @title Gym Managment App
-// @version 1.0.0
-// @description This is a API documnetation for gym management
-// @host localhost:3000
+//	@title			Gym Managment App
+//	@version		1.0.0
+//	@description	This is a API documnetation for gym management
+//	@host			localhost:3000
 func main() {
 
 	if err := godotenv.Load(); err != nil {
