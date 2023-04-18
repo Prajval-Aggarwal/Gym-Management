@@ -6,11 +6,20 @@ import (
 	"gym/server/services/subscriptions"
 	"gym/server/utils"
 	"gym/server/validation"
+
 	"github.com/gin-gonic/gin"
 )
 
+// @Description	Creates a new subscription for the user
+// @Accept			json
+// @Produce		json
+// @Success		200			{object}	response.Success
+// @Failure		400			{object}	response.Error
+// @Param			SubsDetails	body		request.CreateSubRequest	true	"Subscription details"
+// @Tags			Subscription
+// @Router			/createSubscription [post]
 func CreateSubscriptionHandler(context *gin.Context) {
-	
+
 	utils.SetHeader(context)
 
 	var subscriptionCreate request.CreateSubRequest
@@ -26,6 +35,14 @@ func CreateSubscriptionHandler(context *gin.Context) {
 	subscriptions.CreateSubscriptionService(context, subscriptionCreate)
 }
 
+// @Description	Ends the subscription for the user
+// @Accept			json
+// @Produce		json
+// @Success		200			{object}	response.Success
+// @Failure		400			{object}	response.Error
+// @Param			SubsDetails	body		request.EndSubRequest	true	"Subscription details"
+// @Tags			Subscription
+// @Router			/endSubscription [delete]
 func EndSubscriptionHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
@@ -43,18 +60,20 @@ func EndSubscriptionHandler(context *gin.Context) {
 	subscriptions.EndSubscriptionService(context, subscriptionEnd)
 }
 
-// func UpdateSubscriptionHandler(context *gin.Context){
-// 	context.Writer.Header().Set("Content-Type", "application/json")
+// @Description	updates the subscription for the user
+// @Accept			json
+// @Produce		json
+// @Success		200			{object}	response.Success
+// @Failure		400			{object}	response.Error
+// @Param			SubsDetails	body		request.UpdateSubRequest	true	"Subscription details"
+// @Tags			Subscription
+// @Router			/updateSubscription [put]
+func UpdateSubscriptionHandler(context *gin.Context) {
+	utils.SetHeader(context)
 
-// 	var subscriptionEnd request.UpdateSubRequest
+	var subscriptionEnd request.UpdateSubRequest
 
-// 	reqBody, _ := ioutil.ReadAll(context.Request.Body)
+	utils.RequestDecoding(context, &subscriptionEnd)
 
-// 	err := json.Unmarshal(reqBody, &subscriptionEnd)
-// 	if err != nil {
-// 		response.ErrorResponse(context, 400, err.Error())
-// 		return
-// 	}
-
-// 	subscriptions.UpdateSubscriptionService(context, subscriptionEnd)
-// }
+	subscriptions.UpdateSubscriptionService(context, subscriptionEnd)
+}

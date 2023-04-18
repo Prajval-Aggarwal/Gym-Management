@@ -15,13 +15,13 @@ func CreateUserService(context *gin.Context, decodedData request.CreateUserReque
 	var userCreated model.User
 	userCreated.User_Name = decodedData.Name
 	userCreated.Gender = decodedData.Gender
-	
+	//phone number  check if that phone number exists in db or not
 
-	if db.RecordExist("users", "contact" , decodedData.Contact) {
+	if db.RecordExist("credentials", "contact", decodedData.Contact) {
 		response.ErrorResponse(context, 403, "User with this phone number is not allowed to register")
 		return
 	}
-	if db.RecordExist("users","contact",  decodedData.Contact) {
+	if db.RecordExist("users", "contact", decodedData.Contact) {
 		response.ErrorResponse(context, 400, "User already exists")
 		return
 	}
@@ -60,7 +60,7 @@ func GetUserByIdService(context *gin.Context, decodedData request.UserRequest) {
 func UserAttendenceService(context *gin.Context, userId request.UserRequest) {
 	var userAttendence model.UAttendence
 	now := time.Now()
-	if db.RecordExist("u_attendences" ,"date" , now.Format("02 Jan 2006")){
+	if db.RecordExist("u_attendences", "date", now.Format("02 Jan 2006")) {
 		response.ErrorResponse(context, 409, "Attendence already marked")
 		return
 	}

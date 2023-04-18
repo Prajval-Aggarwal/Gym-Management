@@ -66,6 +66,8 @@ func UpdateMembershipService(context *gin.Context, updatedData model.Membership)
 
 func DeleteMembershipService(context *gin.Context, deletedData request.DeleteMembershipRequest) {
 
+	query := "DELETE FROM memberships WHERE mem_name =?"
+	err := db.QueryExecutor(query, nil, deletedData.MembershipName)
 	deletedData.MembershipName = strings.ToLower(deletedData.MembershipName)
 	if !db.RecordExist("memberships", "mem_name", deletedData.MembershipName) {
 		response.ErrorResponse(context, 400, "Membership does not exist")

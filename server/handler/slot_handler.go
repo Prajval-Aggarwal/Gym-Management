@@ -10,6 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//	@Description	updates sthe slot for the user
+//	@Accept			json
+//	@Produce		json
+//
+//	@Success		200		{object}	response.Success
+//	@Failure		400		{object}	response.Error
+//
+//	@Param			UserId	body		request.UpdateSlotRequest	true	"Slot number"
+//	@Tags			Slot
+//	@Router			/slotUpdate [put]
 func SlotUpdateHandler(context *gin.Context) {
 	utils.SetHeader(context)
 	var userId request.UpdateSlotRequest

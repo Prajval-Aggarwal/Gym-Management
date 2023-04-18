@@ -11,6 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//	@Description	Creates a new membership
+//	@Accept			json
+//	@Produce		json
+//	@Success		200					{object}	response.Success
+//	@Failure		400					{object}	response.Error
+//	@Param			MembershipDetails	body		model.Membership	true	"MembershipDetails"
+//	@Tags			Membership
+//	@Router			/createMembership [post]
 func CreateMembershipHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
@@ -28,11 +36,30 @@ func CreateMembershipHandler(context *gin.Context) {
 	membership.CreateMembershipService(context, createMembership)
 }
 
+//	@Description	Gets the list of memberships
+//	@Accept			json
+//	@Produce		json
+//
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+//
+//	@Tags			Membership
+//	@Router			/getMembership [get]
 func GetMembershipHandler(context *gin.Context) {
 	utils.SetHeader(context)
 	membership.GetMembershipsService(context)
 }
 
+//	@Description	updates the membership
+//	@Accept			json
+//	@Produce		json
+//
+//	@Success		200					{object}	response.Success
+//	@Failure		400					{object}	response.Error
+//
+//	@Param			MembershipDetails	body		model.Membership	true	"Membership name"
+//	@Tags			Membership
+//	@Router			/updateMembership [put]
 func UpdateMembershipHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
@@ -51,6 +78,16 @@ func UpdateMembershipHandler(context *gin.Context) {
 
 }
 
+//	@Description	delete a membership
+//	@Accept			json
+//	@Produce		json
+//
+//	@Success		200					{object}	response.Success
+//	@Failure		400					{object}	response.Error
+//
+//	@Param			MembershipDetails	body		request.DeleteMembershipRequest	true	"Membership name"
+//	@Tags			Membership
+//	@Router			/deleteMembership [delete]
 func DeleteMembershipHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
