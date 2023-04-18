@@ -5,6 +5,7 @@ import (
 	"gym/server/model"
 	"gym/server/request"
 	"gym/server/response"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -46,7 +47,7 @@ func GetEmployeeRoleService(context *gin.Context) {
 
 func GetUsersWithEmployeService(context *gin.Context) {
 	var employee []model.EmpWithUser
-	query := "SELECT gym_emps.emp_id , gym_emps.emp_name , COUNT(gym_emps.emp_id) as alotted_members FROM gym_emps LEFT JOIN subscriptions ON subscriptions.emp_id = gym_emps.emp_id GROUP BY gym_emps.emp_id HAVING gym_emps.role = 'Trainer';"
+	query := "SELECT gym_emps.emp_id , gym_emps.emp_name , COUNT(gym_emps.emp_id) as alotted_members FROM gym_emps LEFT JOIN subscriptions ON subscriptions.emp_id = gym_emps.emp_id GROUP BY gym_emps.emp_id HAVING gym_emps.role = 'trainer';"
 	err := db.QueryExecutor(query, &employee)
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
@@ -65,7 +66,7 @@ func CreateEmployeeService(context *gin.Context, Data request.CreateEmployeeRequ
 	var createEmp model.GymEmp
 	createEmp.Emp_name = Data.Emp_name
 	createEmp.Gender = Data.Gender
-	createEmp.Role = Data.Role
+	createEmp.Role = strings.ToLower(Data.Role)
 	err := db.CreateRecord(&createEmp)
 	if err != nil {
 		response.ErrorResponse(context, 500, err.Error())
@@ -83,6 +84,11 @@ func CreateEmployeeService(context *gin.Context, Data request.CreateEmployeeRequ
 func EmployeeAttendenceService(context *gin.Context, userId request.EmployeeRequest) {
 	var empAttendence model.EmpAttendence
 	now := time.Now()
+	
+	if !db.RecordExist("emp_attendences" ,"date", now.Format("02 Jan 2006")){
+		response.ErrorResponse(context , 409 , "Attendence already marked")
+	}
+	
 	empAttendence.User_Id = userId.EmpId
 	empAttendence.Present = "Present"
 	empAttendence.Date = now.Format("02 Jan 2006")

@@ -6,22 +6,9 @@ import (
 	"gym/server/response"
 	"gym/server/services/authentication"
 	"gym/server/utils"
-	"gym/server/validation"
 
 	"github.com/gin-gonic/gin"
 )
-
-func AdminRegisterHandler(context *gin.Context) {
-	utils.SetHeader(context)
-	var adminRequest request.RegisterRequest
-	utils.RequestDecoding(context, &adminRequest)
-	err := validation.CheckValidation(&adminRequest)
-	if err != nil {
-		response.ErrorResponse(context, 400, err.Error())
-		return
-	}
-	authentication.AdminRegisterService(context, adminRequest)
-}
 
 func SendOtpHandler(context *gin.Context) {
 	utils.SetHeader(context)
@@ -41,14 +28,12 @@ func VerifyOtpHandler(context *gin.Context) {
 
 }
 
-
-
 func LogoutHandler(context *gin.Context) {
 	cookie, err := context.Request.Cookie("cookie")
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
 		return
 	}
-	authentication.LogoutService(context , cookie.Value)
+	authentication.LogoutService(context, cookie.Value)
 
 }

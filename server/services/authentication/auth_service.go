@@ -26,31 +26,9 @@ func TwilioInit(password string) {
 	})
 }
 
-func AdminRegisterService(context *gin.Context, adminRequest request.RegisterRequest) {
-
-	var credential model.Credential
-	var existRecord model.Credential
-
-	credential.UserName = adminRequest.Username
-	credential.Contact = adminRequest.Contact
-	credential.Role = "admin"
-
-	err := db.FindById(&existRecord, adminRequest.Contact, "contact")
-	if err == nil {
-		response.ErrorResponse(context, 400, "Account already exists")
-		return
-	}
-	err = db.CreateRecord(&credential)
-	if err != nil {
-		response.ErrorResponse(context, 500, err.Error())
-		return
-	}
-	response.Response(context, 200, credential)
-}
-
 func SendOtpService(context *gin.Context, phoneNumber request.SendOtpRequest) {
 	var exists1 bool
-	query := "SELECT EXISTS(SELECT 1 FROM users WHERE contact_no=?)"
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE contact=?)"
 	err := db.QueryExecutor(query, &exists1, phoneNumber.Contact)
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
@@ -88,7 +66,7 @@ func VerifyOtpService(context *gin.Context, verifyOtp request.VerifyOtpRequest) 
 		fmt.Println("verification sucess")
 		//phone number check
 		var tokenClaims model.Claims
-		var admin model.Credential
+		var admin model.Admin
 		var user model.User
 		fmt.Println("sdgsg")
 		err := db.FindById(&admin, verifyOtp.Contact, "contact")
@@ -102,7 +80,7 @@ func VerifyOtpService(context *gin.Context, verifyOtp request.VerifyOtpRequest) 
 			tokenClaims.Id = user.User_Id
 			tokenClaims.Role = "user"
 		} else {
-			tokenClaims.Id = admin.UserID
+			tokenClaims.Id = admin.AdminId
 			tokenClaims.Role = "admin"
 		}
 		user.IsActive = true

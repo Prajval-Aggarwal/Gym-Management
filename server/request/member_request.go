@@ -1,5 +1,5 @@
 package request
 
 type DeleteMembershipRequest struct {
-	MembershipName string `json:"subsName" validate:"required"`
+	MembershipName string `json:"membershipName" validate:"required"`
 }
