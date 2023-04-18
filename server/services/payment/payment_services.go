@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"gym/server/db"
 	"gym/server/model"
+	"gym/server/provider"
 	"gym/server/request"
 	"gym/server/response"
 	"os"
@@ -125,10 +126,16 @@ func MakePaymentService(context *gin.Context, PaymentData request.CreatePaymentR
 	}
 
 	fmt.Println("same Paymnt",payment)
-
+	cookie,_:=context.Request.Cookie("cookie")
+	
 
 	
-	order_creation(PaymentData.UserId,billamount,context)
+	
+
+
+	claims,_:=provider.DecodeToken(cookie.Value)
+	
+	order_creation(claims.Id,billamount,context)
 	response.ShowResponse("Success", 200, "Order Created", payment, context)
 
 }
