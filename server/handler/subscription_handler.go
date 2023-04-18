@@ -6,11 +6,12 @@ import (
 	"gym/server/services/subscriptions"
 	"gym/server/utils"
 	"gym/server/validation"
+
 	"github.com/gin-gonic/gin"
 )
 
 func CreateSubscriptionHandler(context *gin.Context) {
-	
+
 	utils.SetHeader(context)
 
 	var subscriptionCreate request.CreateSubRequest
@@ -43,18 +44,12 @@ func EndSubscriptionHandler(context *gin.Context) {
 	subscriptions.EndSubscriptionService(context, subscriptionEnd)
 }
 
-// func UpdateSubscriptionHandler(context *gin.Context){
-// 	context.Writer.Header().Set("Content-Type", "application/json")
+func UpdateSubscriptionHandler(context *gin.Context) {
+	utils.SetHeader(context)
 
-// 	var subscriptionEnd request.UpdateSubRequest
+	var subscriptionEnd request.UpdateSubRequest
 
-// 	reqBody, _ := ioutil.ReadAll(context.Request.Body)
+	utils.RequestDecoding(context, &subscriptionEnd)
 
-// 	err := json.Unmarshal(reqBody, &subscriptionEnd)
-// 	if err != nil {
-// 		response.ErrorResponse(context, 400, err.Error())
-// 		return
-// 	}
-
-// 	subscriptions.UpdateSubscriptionService(context, subscriptionEnd)
-// }
+	subscriptions.UpdateSubscriptionService(context, subscriptionEnd)
+}

@@ -4,9 +4,10 @@ import (
 	_ "gym/docs"
 	"gym/server/handler"
 
+	"gym/server/provider"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"gym/server/provider"
 )
 
 func ConfigureRoutes(server *Server) {
@@ -41,6 +42,7 @@ func ConfigureRoutes(server *Server) {
 	//subscriptions
 	server.engine.POST("/createSubscription", provider.UserAuthorization, handler.CreateSubscriptionHandler)
 	server.engine.DELETE("/endSubscription", provider.AdminAuthorization, handler.EndSubscriptionHandler)
+	server.engine.POST("/updateSubscription", provider.AdminAuthorization, handler.UpdateMembershipHandler)
 
 	//Payment Routes
 	server.engine.POST("/createPayment", provider.UserAuthorization, handler.MakePaymentHandler)
