@@ -45,7 +45,9 @@ func ConfigureRoutes(server *Server) {
 	server.engine.POST("/updateSubscription", provider.AdminAuthorization, handler.UpdateMembershipHandler)
 
 	//Payment Routes
-	server.engine.POST("/createPayment", provider.UserAuthorization, handler.MakePaymentHandler)
+	server.engine.POST("/createPayment", handler.MakePaymentHandler)
+	server.engine.POST("/paymentResponse",handler.PaymentResponse)
+
 
 	//Auth routes
 	server.engine.POST("/adminRegister", handler.AdminRegisterHandler)

@@ -4,15 +4,14 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"gym/server/db"
 	"gym/server/model"
 	"gym/server/request"
 	"gym/server/response"
-	"io/ioutil"
 	"os"
 	"text/template"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/razorpay/razorpay-go"
@@ -70,6 +69,7 @@ type PaymentStatusUpdate struct {
 
 type Pagevar struct {
 	Orderid string
+	Amount float64
 }
 var pagevar Pagevar
 
@@ -81,6 +81,8 @@ func MakePaymentService(context *gin.Context, PaymentData request.CreatePaymentR
 
 	payment.Payment_Type = PaymentData.PaymentType
 	err := db.FindById(&subscription, PaymentData.UserId, "user_id")
+
+	fmt.Println("subscription", subscription)
 	// er:=db.DB.Where("membership_name=?",membership.MemName).First(&memship).Error
 	//
 	if err != nil {
@@ -112,6 +114,9 @@ func MakePaymentService(context *gin.Context, PaymentData request.CreatePaymentR
 	payment.OfferAmount = billamount
 	payment.User_Id = PaymentData.UserId
 
+	fmt.Println("paymetn ",payment)
+	fmt.Println("/n")
+
 	//add razor pay to add payemnt id for now it is uuid
 	err = db.CreateRecord(&payment)
 	if err != nil {
@@ -119,42 +124,33 @@ func MakePaymentService(context *gin.Context, PaymentData request.CreatePaymentR
 		return
 	}
 
-	subscription.Payment_Id = payment.Payment_Id
+	fmt.Println("same Paymnt",payment)
 
-	result := db.UpdateRecord(&subscription, PaymentData.UserId, "user_id")
-	if result.Error != nil {
-		response.ErrorResponse(context, 400, result.Error.Error())
-		return
-	}
 
-	userid:="123"
-	order_creation(userid,membership,context)
+	
+	order_creation(PaymentData.UserId,billamount,context)
 	response.ShowResponse("Success", 200, "Order Created", payment, context)
 
 }
 
 
-func order_creation(user_id string,membership model.Membership ,context *gin.Context){
+func order_creation(user_id string,billamount float64,context *gin.Context){
 
 	//ORDER CREATION------------------------------------------------------>
 
-	var memship model.Membership
-	memship.MemName=membership.MemName
-	// er:=db.DB.Where("membership_name=?",membership.MemName).First(&memship).Error
-	er:=db.FindById(&memship,membership.MemName,"membership_name")
-	if er!=nil {
-		// Res.Response("server error",500,er.Error(),"",writer)
-		response.ShowResponse("server error", 500, er.Error(), "", context)
+	
+	var subscription model.Subscription
+	db.FindById(&subscription,user_id,"user_id")
 
-	}
+	
 	client := razorpay.NewClient("rzp_test_MLjFMJxEVuaLjd", os.Getenv("Razorpay_Key"))
 
 	data := map[string]interface{}{
-		"amount":   memship.Price,        
+		"amount":  billamount ,        
 		"currency": "INR",
 		"notes": map[string]interface{}{
 
-        "subscription":membership.MemName,
+        "subscription":subscription.Subs_Name,
 		},
 	}
 	Body, err := client.Order.Create(data, nil)
@@ -173,7 +169,7 @@ func order_creation(user_id string,membership model.Membership ,context *gin.Con
 
 	
 // Template
-	t, err := template.ParseFiles("services/payment/payment.html")
+	t, err := template.ParseFiles("server/services/payment/payment.html")
 	if err!=nil{
 		fmt.Println("template parsing error",err)
 	}
@@ -193,38 +189,43 @@ func order_creation(user_id string,membership model.Membership ,context *gin.Con
 
 	//update during order creation
 		var payment model.Payment
-		
+		db.FindById(&payment,user_id,"user_id")
 		payment.Order_id=order_id
-		
+		fmt.Println(";bkdsjkfdsfkjfadand:",payment.Order_id)
+		// fmt.Println("payment is",payment)
 		// Er:=db.DB.Where("user_id=?",user_id).Updates(&payment).Error
-		Er:=db.FindById(&memship,user_id,"user_id")
-
+		// Er:=db.FindById(&memship,user_id,"user_id")
+		Er:=db.UpdateRecord(&payment, user_id,"user_id").Error
+		
+	// fmt.Println("fghfhf")
 		if Er!=nil{
 			// Res.Response("server error",500,er.Error(),"",writer)
-			response.ShowResponse("server error", 500, er.Error(), "", context)
-
+			fmt.Println("errro is ",Er.Error())
+			//sresponse.ErrorResponse(context, 500, er.Error())
 		}
-
+		// fmt.Println("yujghjgj")
 
 }
 
 
 
 
-func Razorpay_Response(context *gin.Context, PaymentData PaymentStatusUpdate) {
+func Razorpay_Response(context *gin.Context, body []byte) {
 	fmt.Println("Response function called./....")
 	// w.Header().Set("Content-Type", "application/json")
 
 	// body, err := ioutil.ReadAll(r.Body)
 	
 	
-	// json.Unmarshal(body, &response)
+
+	var paymentresponse PaymentStatusUpdate
+	json.Unmarshal(body, &paymentresponse)
 	fmt.Println("")
 
-	fmt.Println("id", PaymentData.Payload.Payment.Entity.ID)
-	fmt.Println("order_id",PaymentData.Payload.Payment.Entity.OrderID)
-	fmt.Println("amount", (PaymentData.Payload.Payment.Entity.Amount)/100)
-	fmt.Println("status", PaymentData.Payload.Payment.Entity.Status)
+	fmt.Println("id", paymentresponse.Payload.Payment.Entity.ID)
+	fmt.Println("order_id",paymentresponse.Payload.Payment.Entity.OrderID)
+	fmt.Println("amount", (paymentresponse.Payload.Payment.Entity.Amount)/100)
+	fmt.Println("status", paymentresponse.Payload.Payment.Entity.Status)
 
 	
 
@@ -233,7 +234,7 @@ func Razorpay_Response(context *gin.Context, PaymentData PaymentStatusUpdate) {
 
 	var payment model.Payment
 	// err1:=db.DB.Where("order_id=?",response.Payload.Payment.Entity.OrderID).First(&payment).Error
-	err1:=db.FindById(&payment,PaymentData.Payload.Payment.Entity.OrderID,"order_id")
+	err1:=db.FindById(&payment,paymentresponse.Payload.Payment.Entity.OrderID,"order_id")
 
 	if err1!=nil{
 		fmt.Println("error is ",err1)
@@ -242,22 +243,24 @@ func Razorpay_Response(context *gin.Context, PaymentData PaymentStatusUpdate) {
 
 	}
 	//updates after response
-	payment.Payment_Id=PaymentData.Payload.Payment.Entity.ID
-	payment.Status=PaymentData.Payload.Payment.Entity.Status
-	payment.CreatedAt=time.Now()
+	fmt.Println("payment before updation",payment)
+	payment.Payment_Id=paymentresponse.Payload.Payment.Entity.ID
+	payment.Status=paymentresponse.Payload.Payment.Entity.Status
+//	payment.Order_id=paymentresponse.Payload.Payment.Entity.OrderID
+	fmt.Println("payment after updation is:",payment)
+	
+//update payment 
+
+	// err:=db.UpdateRecord(&payment,paymentresponse.Payload.Payment.Entity.OrderID,"order_id").Error
+	// if err!=nil{
+	// 	fmt.Println("eroronbsjdfkjsdkjfbsd:",err.Error())
+	// 	return
+	// }
+	db.QueryExecutor("UPDATE payments SET status=? ,payment_id=? WHERE order_id=?",nil,paymentresponse.Payload.Payment.Entity.Status,paymentresponse.Payload.Payment.Entity.ID,paymentresponse.Payload.Payment.Entity.OrderID)
+
 
 	if payment.Status=="captured"{
-
-		var user model.User
-
-		// db.DB.Where("user_id=?",payment.User_Id).First(&user)
-		Er:=db.FindById(&user,payment.User_Id,"user_id")
-		if Er!=nil{
-
-		response.ShowResponse("server error", 500, err1.Error(), "", context)
-
-		}
-
+		
 		var subscription model.Subscription
 		er:=db.FindById(&subscription,payment.User_Id,"user_id")
 		if er!=nil{
@@ -266,33 +269,31 @@ func Razorpay_Response(context *gin.Context, PaymentData PaymentStatusUpdate) {
 
 		}
 		subscription.Payment_Id=payment.Payment_Id
-		
 
-		
-		
 
-		// db.DB.Where("user_id=?",payment.User_id).Updates(&user)
+		err:=db.UpdateRecord(&subscription,payment.User_Id,"user_id").Error
+		if er!=nil{
+
+			response.ShowResponse("server error", 500, err.Error(), "", context)
+
+		}
+
 
 
 		
 	}
-
-	fmt.Println("Payments is;",payment)
+	fmt.Println("full paymewnt info",payment)
+	// fmt.Println("Payments is;",payment.Status)
+	// fmt.Println("order id ",paymentresponse.Payload.Payment.Entity.OrderID)
+	fmt.Println("orderidd",payment.Order_id)
 	// dbErr:=db.DB.Where("order_id=?",PaymentData.Payload.Payment.Entity.OrderID).Updates(&payment).Error
-	dbErr:=db.UpdateRecord(&payment,PaymentData.Payload.Payment.Entity.OrderID,"order_id").Error
 
-	if dbErr!=nil{
-		fmt.Println("db error",dbErr)
-		// Res.Response("Bad gateway",500,dbErr.Error(),"",w)
-		response.ShowResponse("server error", 500, dbErr.Error(), "", context)
-
-	}
 
 	//Signature verification
-	signature := context.Request.Header["X-Razorpay-Signature"]
+	signature := context.Request.Header.Get("X-Razorpay-Signature")
 	fmt.Println("signature", signature)
-	reqBody, _ := ioutil.ReadAll(context.Request.Body)
-	if !VerifyWebhookSignature(reqBody, signature[0], os.Getenv("API_SecretKey")) {
+	
+	if !VerifyWebhookSignature(body, signature, os.Getenv("Razorpay_Key")) {
 
 		response.ShowResponse("Unauthorized",401,"Invalid signature","",context)
 		return
@@ -301,10 +302,6 @@ func Razorpay_Response(context *gin.Context, PaymentData PaymentStatusUpdate) {
 		fmt.Println("signature verified")
 		response.ShowResponse("OK",200,"Success","",context)
 	}
-
-
-	
-
 
 
 	

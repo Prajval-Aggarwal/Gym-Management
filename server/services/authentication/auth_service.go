@@ -54,7 +54,7 @@ func AdminRegisterService(context *gin.Context, adminRequest request.RegisterReq
 
 func SendOtpService(context *gin.Context, phoneNumber request.SendOtpRequest) {
 	var exists1 bool
-	query := "SELECT EXISTS(SELECT 1 FROM users WHERE contact_no=?)"
+	query := "SELECT EXISTS(SELECT 1 FROM users WHERE contact=?)"
 	err := db.QueryExecutor(query, &exists1, phoneNumber.Contact)
 	if err != nil {
 		response.ErrorResponse(context, 400, err.Error())
@@ -98,7 +98,7 @@ func VerifyOtpService(context *gin.Context, verifyOtp request.VerifyOtpRequest) 
 		err := db.FindById(&admin, verifyOtp.Contact, "contact")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 
-			err := db.FindById(&user, verifyOtp.Contact, "contact_no")
+			err := db.FindById(&user, verifyOtp.Contact, "contact")
 			if err != nil {
 				response.ErrorResponse(context, 500, "Error finding in DB")
 				return

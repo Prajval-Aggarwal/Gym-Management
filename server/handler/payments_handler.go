@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"fmt"
 	"gym/server/request"
 	"gym/server/response"
 	"gym/server/services/payment"
 	"gym/server/utils"
 	"gym/server/validation"
+	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,4 +24,24 @@ func MakePaymentHandler(context *gin.Context) {
 		return
 	}
 	payment.MakePaymentService(context, createPayment)
+}
+
+func PaymentResponse(context *gin.Context) {
+
+
+	
+
+	body, err := ioutil.ReadAll(context.Request.Body)
+
+	if err!=nil{
+		fmt.Println("error in payment response")
+	}
+
+	
+
+
+	payment.Razorpay_Response(context,body)
+	
+
+
 }
