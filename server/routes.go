@@ -12,6 +12,9 @@ import (
 
 func ConfigureRoutes(server *Server) {
 
+	// cors middleware 
+	server.engine.Use(provider.CORSMiddleware())
+
 	//Membership routes
 	server.engine.GET("/getMembership", provider.AdminAuthorization, handler.GetMembershipHandler)
 	server.engine.POST("/createMembership", provider.AdminAuthorization, handler.CreateMembershipHandler)

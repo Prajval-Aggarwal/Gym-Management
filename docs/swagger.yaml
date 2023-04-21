@@ -1,7 +1,40 @@
 definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
   model.EmpTypes:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      role:
+        type: string
+      salary:
+        type: number
+      updatedAt:
+        type: string
     type: object
   model.Membership:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      membershipName:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    required:
+    - membershipName
+    - price
     type: object
   request.CreatePaymentRequest:
     properties:
