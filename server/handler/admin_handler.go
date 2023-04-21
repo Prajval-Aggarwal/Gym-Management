@@ -10,6 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Description	Registers a admin
+// @Accept			json
+// @Produce		json
+// @Success		200				{object}	response.Success
+// @Failure		400				{object}	response.Error
+// @Param			AdminDetails	body		request.RegisterRequest	true	"Registers a admin"
+// @Tags			Authentication
+// @Router			/adminRegister [post]
 func AdminRegisterHandler(context *gin.Context) {
 	utils.SetHeader(context)
 	var adminRequest request.RegisterRequest

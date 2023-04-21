@@ -28,8 +28,8 @@ func TwilioInit(password string) {
 
 func AdminRegisterService(context *gin.Context, adminRequest request.RegisterRequest) {
 
-	var credential model.Credential
-	credential.UserName = adminRequest.Username
+	var credential model.Admin
+	credential.Name = adminRequest.Username
 	credential.Contact = adminRequest.Contact
 	credential.Role = "admin"
 
