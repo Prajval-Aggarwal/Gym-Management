@@ -42,7 +42,6 @@ func QueryExecutor(query string, data interface{}, args ...interface{}) error {
 		return err
 	}
 
-	// return nil if there were no errors
 	return nil
 }
 

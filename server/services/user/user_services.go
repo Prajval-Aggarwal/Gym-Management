@@ -60,6 +60,10 @@ func GetUserByIdService(context *gin.Context, decodedData request.UserRequest) {
 func UserAttendenceService(context *gin.Context, userId request.UserRequest) {
 	var userAttendence model.UAttendence
 	now := time.Now()
+	if db.RecordExist("u_attendences", "date", now.Format("02 Jan 2006")) {
+		response.ErrorResponse(context, 409, "Attendence already marked")
+		return
+	}
 	userAttendence.User_Id = userId.UserId
 	userAttendence.Present = "Present"
 	userAttendence.Date = now.Format("02 Jan 2006")

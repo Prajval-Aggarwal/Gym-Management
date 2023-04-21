@@ -14,9 +14,8 @@ type Payment struct {
 	Offer        string         `json:"offer"`
 	Payment_Type string         `json:"payment_type"`
 	Status       string         `json:"status"`
-	CreatedAt    time.Time      `json:"createdAt"`
-	UpdatedAt    time.Time      `json:"updatedAt"`
-	DeletedAt    gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	Order_id     string         `json:"order_id"`    
+	Membership   string         `json:"membership"`   
 }
 
 type Subscription struct {

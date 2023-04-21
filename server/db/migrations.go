@@ -39,7 +39,7 @@ func AutoMigrateDatabase(db *gorm.DB) {
 
 	}
 	if dbVersion.Version < 3 {
-		err := db.AutoMigrate(&model.Credential{})
+		err := db.AutoMigrate(&model.Admin{})
 		if err != nil {
 			panic(err)
 		}
