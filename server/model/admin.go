@@ -6,9 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type Credential struct {
-	UserID    string         `json:"userId"  gorm:"default:uuid_generate_v4();unique;primaryKey"`
-	UserName  string         `json:"username" gorm:"unique"`
+type Admin struct {
+	AdminId   string         `json:"adminId"  gorm:"default:uuid_generate_v4();unique;primaryKey"`
+	Name      string         `json:"name" gorm:"unique"`
 	Role      string         `json:"role"`
 	Contact   string         `json:"contact" gorm:"unique"`
 	CreatedAt time.Time      `json:"createdAt"`

@@ -10,6 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//	@Description	Adds a new equipment to the gym
+//	@Accept			json
+//	@Produce		json
+//
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+// Param EquipDetails body model.Equipment true "Equipment details"
+//
+//	@Tags			Equipment
+//	@Router			/createEquipment [post]
 func CreateEquipmentHandler(context *gin.Context) {
 
 	utils.SetHeader(context)
@@ -27,6 +37,14 @@ func CreateEquipmentHandler(context *gin.Context) {
 	equipment.CreateEquipmentService(context, createEquipment)
 
 }
+
+//	@Description	Get List of equipments
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+//	@Tags			Equipment
+//	@Router			/getEquipments [get]
 func GetEquipmentHandler(context *gin.Context) {
 	utils.SetHeader(context)
 	equipment.GetEquipmentService(context)
