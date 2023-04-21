@@ -14,7 +14,7 @@ func AdminRegisterService(context *gin.Context, adminRequest request.RegisterReq
 	var admin model.Admin
 	var existRecord model.Admin
 
-	if !db.RecordExist("admins" , "contact" , adminRequest.Contact){
+	if db.RecordExist("admins", "contact", adminRequest.Contact) {
 		response.ErrorResponse(context, 400, "Admin already exists")
 		return
 	}
@@ -33,5 +33,5 @@ func AdminRegisterService(context *gin.Context, adminRequest request.RegisterReq
 		response.ErrorResponse(context, 500, err.Error())
 		return
 	}
-	response.Response(context, 200, admin)
+	response.ShowResponse("Success", 200, "Admin created successfully", admin, context)
 }

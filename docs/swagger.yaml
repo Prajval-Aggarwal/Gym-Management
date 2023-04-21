@@ -1,40 +1,7 @@
 definitions:
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   model.EmpTypes:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      role:
-        type: string
-      salary:
-        type: number
-      updatedAt:
-        type: string
     type: object
   model.Membership:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      membershipName:
-        type: string
-      price:
-        type: number
-      updatedAt:
-        type: string
-    required:
-    - membershipName
-    - price
     type: object
   request.CreatePaymentRequest:
     properties:
@@ -64,10 +31,10 @@ definitions:
     type: object
   request.DeleteMembershipRequest:
     properties:
-      subsName:
+      membershipName:
         type: string
     required:
-    - subsName
+    - membershipName
     type: object
   request.EmployeeRequest:
     properties:
@@ -105,16 +72,6 @@ definitions:
     - slotId
     - userId
     type: object
-  request.UpdateSubRequest:
-    properties:
-      subsName:
-        type: string
-      userId:
-        type: string
-    required:
-    - subsName
-    - userId
-    type: object
   request.UserRequest:
     properties:
       userId:
@@ -146,7 +103,7 @@ definitions:
       status:
         type: string
     type: object
-host: localhost:3000
+host: 13.233.130.222:3000
 info:
   contact: {}
   description: This is a API documnetation for gym management
@@ -633,31 +590,6 @@ paths:
             $ref: '#/definitions/response.Error'
       tags:
       - Membership
-  /updateSubscription:
-    put:
-      consumes:
-      - application/json
-      description: updates the subscription for the user
-      parameters:
-      - description: Subscription details
-        in: body
-        name: SubsDetails
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdateSubRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Success'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Error'
-      tags:
-      - Subscription
   /userAttendence:
     post:
       consumes:

@@ -764,45 +764,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/updateSubscription": {
-            "put": {
-                "description": "updates the subscription for the user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Subscription"
-                ],
-                "parameters": [
-                    {
-                        "description": "Subscription details",
-                        "name": "SubsDetails",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.UpdateSubRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Success"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/userAttendence": {
             "post": {
                 "description": "Marks the User present for that day",
@@ -883,61 +844,11 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
         "model.EmpTypes": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "salary": {
-                    "type": "number"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.Membership": {
-            "type": "object",
-            "required": [
-                "membershipName",
-                "price"
-            ],
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "membershipName": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "request.CreatePaymentRequest": {
             "type": "object",
@@ -980,10 +891,10 @@ const docTemplate = `{
         "request.DeleteMembershipRequest": {
             "type": "object",
             "required": [
-                "subsName"
+                "membershipName"
             ],
             "properties": {
-                "subsName": {
+                "membershipName": {
                     "type": "string"
                 }
             }
@@ -1044,21 +955,6 @@ const docTemplate = `{
                 }
             }
         },
-        "request.UpdateSubRequest": {
-            "type": "object",
-            "required": [
-                "subsName",
-                "userId"
-            ],
-            "properties": {
-                "subsName": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "string"
-                }
-            }
-        },
         "request.UserRequest": {
             "type": "object",
             "required": [
@@ -1113,7 +1009,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:3000",
+	Host:             "13.233.130.222:3000",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Gym Managment App",
