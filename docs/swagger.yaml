@@ -1,0 +1,711 @@
+definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  model.EmpTypes:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      role:
+        type: string
+      salary:
+        type: number
+      updatedAt:
+        type: string
+    type: object
+  model.Membership:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      membershipName:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    required:
+    - membershipName
+    - price
+    type: object
+  request.CreatePaymentRequest:
+    properties:
+      paymentType:
+        type: string
+      userId:
+        type: string
+    required:
+    - paymentType
+    - userId
+    type: object
+  request.CreateSubRequest:
+    properties:
+      duration:
+        type: integer
+      slotId:
+        type: integer
+      subsName:
+        type: string
+      userId:
+        type: string
+    required:
+    - duration
+    - slotId
+    - subsName
+    - userId
+    type: object
+  request.DeleteMembershipRequest:
+    properties:
+      subsName:
+        type: string
+    required:
+    - subsName
+    type: object
+  request.EmployeeRequest:
+    properties:
+      empId:
+        type: string
+    required:
+    - empId
+    type: object
+  request.EndSubRequest:
+    properties:
+      userId:
+        type: string
+    required:
+    - userId
+    type: object
+  request.RegisterRequest:
+    properties:
+      contact:
+        type: string
+      username:
+        type: string
+    type: object
+  request.SendOtpRequest:
+    properties:
+      contact:
+        type: string
+    type: object
+  request.UpdateSlotRequest:
+    properties:
+      slotId:
+        type: integer
+      userId:
+        type: string
+    required:
+    - slotId
+    - userId
+    type: object
+  request.UpdateSubRequest:
+    properties:
+      subsName:
+        type: string
+      userId:
+        type: string
+    required:
+    - subsName
+    - userId
+    type: object
+  request.UserRequest:
+    properties:
+      userId:
+        type: string
+    required:
+    - userId
+    type: object
+  request.VerifyOtpRequest:
+    properties:
+      contact:
+        type: string
+      otp:
+        type: string
+    type: object
+  response.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  response.Success:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a API documnetation for gym management
+  title: Gym Managment App
+  version: 1.0.0
+paths:
+  /adminRegister:
+    post:
+      consumes:
+      - application/json
+      description: Registers a admin
+      parameters:
+      - description: Registers a admin
+        in: body
+        name: AdminDetails
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Authentication
+  /createEmp:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new employee record in database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /createEquipment:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new equipment to the gym
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Equipment
+  /createMembership:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new membership
+      parameters:
+      - description: MembershipDetails
+        in: body
+        name: MembershipDetails
+        required: true
+        schema:
+          $ref: '#/definitions/model.Membership'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Membership
+  /createPayment:
+    post:
+      consumes:
+      - application/json
+      description: Makes a payment against the user id
+      parameters:
+      - description: Payment details
+        in: body
+        name: paymentType
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Payment
+  /createSubscription:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new subscription for the user
+      parameters:
+      - description: Subscription details
+        in: body
+        name: SubsDetails
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateSubRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Subscription
+  /createUser:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user record in database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - User
+  /deleteMembership:
+    delete:
+      consumes:
+      - application/json
+      description: delete a membership
+      parameters:
+      - description: Membership name
+        in: body
+        name: MembershipDetails
+        required: true
+        schema:
+          $ref: '#/definitions/request.DeleteMembershipRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Membership
+  /empAttendence:
+    post:
+      consumes:
+      - application/json
+      description: Create the type of employees
+      parameters:
+      - description: Employee type like tranier,cleaner
+        in: body
+        name: EmployeeTypes
+        required: true
+        schema:
+          $ref: '#/definitions/model.EmpTypes'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /empWithuser:
+    get:
+      consumes:
+      - application/json
+      description: Give the the count how many trainer are training how many people
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /endSubscription:
+    delete:
+      consumes:
+      - application/json
+      description: Ends the subscription for the user
+      parameters:
+      - description: Subscription details
+        in: body
+        name: SubsDetails
+        required: true
+        schema:
+          $ref: '#/definitions/request.EndSubRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Subscription
+  /getEmp:
+    get:
+      consumes:
+      - application/json
+      description: Gets the list of employees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /getEmpById:
+    post:
+      consumes:
+      - application/json
+      description: Gets a singler employee
+      parameters:
+      - description: Employee details
+        in: body
+        name: EmployeeId
+        required: true
+        schema:
+          $ref: '#/definitions/request.EmployeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /getEmpRole:
+    get:
+      consumes:
+      - application/json
+      description: Gets the list of employee roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /getEquipments:
+    get:
+      consumes:
+      - application/json
+      description: Get List of equipments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Equipment
+  /getMembership:
+    get:
+      consumes:
+      - application/json
+      description: Gets the list of memberships
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Membership
+  /getUserById:
+    post:
+      consumes:
+      - application/json
+      description: Gets a singler User
+      parameters:
+      - description: User type like tranier,cleaner
+        in: body
+        name: UserId
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - User
+  /getUsers:
+    get:
+      consumes:
+      - application/json
+      description: Gets the list of users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Employee
+  /logOut:
+    get:
+      consumes:
+      - application/json
+      description: Logs out a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Authentication
+  /sendOTP:
+    post:
+      consumes:
+      - application/json
+      description: Sends a otp to the number entered
+      parameters:
+      - description: Phone Number of registered user
+        in: body
+        name: phoneNumber
+        required: true
+        schema:
+          $ref: '#/definitions/request.SendOtpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Authentication
+  /slotUpdate:
+    put:
+      consumes:
+      - application/json
+      description: updates sthe slot for the user
+      parameters:
+      - description: Slot number
+        in: body
+        name: UserId
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateSlotRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Slot
+  /updateMembership:
+    put:
+      consumes:
+      - application/json
+      description: updates the membership
+      parameters:
+      - description: Membership name
+        in: body
+        name: MembershipDetails
+        required: true
+        schema:
+          $ref: '#/definitions/model.Membership'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Membership
+  /updateSubscription:
+    put:
+      consumes:
+      - application/json
+      description: updates the subscription for the user
+      parameters:
+      - description: Subscription details
+        in: body
+        name: SubsDetails
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateSubRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Subscription
+  /userAttendence:
+    post:
+      consumes:
+      - application/json
+      description: Marks the User present for that day
+      parameters:
+      - description: Details of User whose attendence is to be marked
+        in: body
+        name: UserDetails
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - User
+  /verifyOTP:
+    post:
+      consumes:
+      - application/json
+      description: Verifies the OTP sent to the user
+      parameters:
+      - description: Phone Number of registered user and the otp sent to it
+        in: body
+        name: details
+        required: true
+        schema:
+          $ref: '#/definitions/request.VerifyOtpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "401":
+          description: Verification Failed
+          schema:
+            type: string
+      tags:
+      - Authentication
+swagger: "2.0"

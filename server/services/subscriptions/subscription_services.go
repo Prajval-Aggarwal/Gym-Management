@@ -1,12 +1,14 @@
 package subscriptions
 
 import (
+	"errors"
 	"fmt"
 	"gym/server/db"
 	"gym/server/model"
 	"gym/server/request"
 	"gym/server/response"
 	"math"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +26,7 @@ func CreateSubscriptionService(context *gin.Context, subscriptionCreate request.
 
 	var subscription model.Subscription
 	subscription.Slot_id = subscriptionCreate.SlotId
-	subscription.Subs_Name = subscriptionCreate.SubsName
+	subscription.Subs_Name = strings.ToLower(subscriptionCreate.SubsName)
 	subscription.StartDate = dateStr.Format("02 Jan 2006")
 	subscription.Duration = float64(subscriptionCreate.Duration)
 	subscription.EndDate = dateStr.AddDate(0, 0, int(subscription.Duration*30)).Format("02 Jan 2006")
@@ -59,35 +61,44 @@ func CreateSubscriptionService(context *gin.Context, subscriptionCreate request.
 		response.ErrorResponse(context, 500, err.Error())
 		return
 	}
-	//AddEmptoSub(subscription)
+
+	err = AddEmptoSub(context, subscription)
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
+		return
+	}
 
 	response.ShowResponse("Success", 200, "Subscription added successfully", subscription, context)
 
 }
 
-func AddEmptoSub(sub model.Subscription) {
+func AddEmptoSub(c *gin.Context, sub model.Subscription) error {
 
-	var employee model.GymEmp
-
+	// var employee model.GymEmp
+	if SelectRand().Emp_Id == "" {
+		return errors.New("No employees to be added")
+	}
 	sub.Emp_Id = SelectRand().Emp_Id
-	sub.Emp_name = SelectRand().Emp_name
-	if employee.Role != "Trainer" {
-		fmt.Println("Alotted employee can only be a trainer , please add a trainer!!")
 
+	sub.Emp_name = SelectRand().Emp_name
+
+	if SelectRand().Role != "trainer" {
+		return errors.New("Employee should be a trainer please add a Trainer")
 	}
 
 	db.UpdateRecord(&sub, sub.User_Id, "user_id")
-
+	return nil
 }
 
 func SelectRand() *model.GymEmp {
 
 	var employee model.GymEmp
-	query := "SELECT * FROM gym_emps  WHERE gym_emps.role = 'Trainer' ORDER BY RANDOM()  LIMIT 1;"
+	query := "SELECT * FROM gym_emps  WHERE gym_emps.role = 'trainer' ORDER BY RANDOM()  LIMIT 1;"
 	err := db.QueryExecutor(query, &employee)
 	if err != nil {
 		return nil
 	}
+
 	return &employee
 }
 
@@ -158,55 +169,69 @@ func EndSubscriptionService(context *gin.Context, subscriptionEnd request.EndSub
 
 }
 
-// func UpdateSubscriptionService(context *gin.Context, subscriptionUpdate request.UpdateSubRequest){
-// 	var currentSubscription model.Subscription
-// 	var updatedSubscription model.Subscription
-// 	var payment model.Payment
+func UpdateSubscriptionService(context *gin.Context, subscriptionUpdate request.UpdateSubRequest) {
+	var currentSubscription model.Subscription
+	var updatedSubscription model.Subscription
+	var newAmount float64
+	var memShip model.Membership
+	var payment model.Payment
+	var s string
 
-// 	err := db.FindById(&currentSubscription , subscriptionUpdate.UserId ,  "user_id")
+	err := db.FindById(&currentSubscription, subscriptionUpdate.UserId, "user_id")
 
-// 	if err!=nil{
-// 		response.ErrorResponse(context, 400, err.Error())
-// 		return
-// 	}
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
+		return
+	}
 
-// 	err = db.FindById(&payment , subscriptionUpdate.UserId , "user_id")
+	err = db.FindById(&payment, subscriptionUpdate.UserId, "user_id")
 
-// 	if err!=nil{
-// 		response.ErrorResponse(context, 400, err.Error())
-// 		return
-// 	}
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
+		return
+	}
 
-// 	if currentSubscription.Subs_Name == updatedSubscription.Subs_Name {
-// 		response.ErrorResponse(context , 409 , "User already accquires that subscription")
-// 		return
-// 	}
+	if currentSubscription.Subs_Name == updatedSubscription.Subs_Name {
+		response.ErrorResponse(context, 409, "User already accquires that subscription")
+		return
+	}
 
-// 	var newAmount float64
-// 	var memShip model.Membership
+	err = db.FindById(&memShip, subscriptionUpdate.SubsName, "subs_name")
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
+		return
+	}
 
-// 	err = db.FindById(&memShip , subscriptionUpdate.SubsName , "subs_name")
+	if updatedSubscription.Duration == 0 {
+		newAmount = memShip.Price * currentSubscription.Duration
+	} else {
+		newAmount = memShip.Price * updatedSubscription.Duration
+	}
+	oldAmount := payment.Amount
+	fmt.Println("new amount is:", newAmount)
+	if newAmount > oldAmount {
+		diff := newAmount - oldAmount
+		s = fmt.Sprintf("You need to pay %v amount to upgrade your subscription\n", diff)
 
-// 	if updatedSubscription.Duration == 0 {
-// 		newAmount = memShip.Price * currentSubscription.Duration
-// 	} else {
-// 		newAmount = memShip.Price * updatedSubscription.Duration
-// 	}
-// 	fmt.Println("new amount is:", newAmount)
-// 	if newAmount > oldAmount {
-// 		diff := newAmount - oldAmount
-// 		fmt.Fprintf(w, "You need to pay %v amount to upgrade your subscription\n", diff)
-// 		payment.Amount = newAmount
+		payment.Amount = newAmount
 
-// 	} else {
+	} else {
+		newDuration := oldAmount / memShip.Price
+		currentSubscription.Duration = newDuration
+	}
+	currentSubscription.Subs_Name = updatedSubscription.Subs_Name
 
-// 		newDuration := oldAmount / memShip.Price
-// 		currentSubscription.Duration = newDuration
-// 	}
-// 	currentSubscription.Subs_Name = updatedSubscription.Subs_Name
+	err = db.UpdateRecord(&currentSubscription, subscriptionUpdate.UserId, "user_id").Error
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
+		return
+	}
+	err = db.UpdateRecord(&payment, subscriptionUpdate.UserId, "user_id").Error
+	if err != nil {
+		response.ErrorResponse(context, 400, err.Error())
+		return
+	}
 
-// 	db.DB.Where("user_id=?", id).Updates(&currentSubscription)
-// 	db.DB.Where("user_id=?", id).Updates(&payment)
+	response.ShowResponse("Sucess", 200, s, nil, context)
 
-// 	w.Write([]byte("Subscription updated successfully"))
-// }
+}

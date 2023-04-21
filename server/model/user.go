@@ -7,13 +7,14 @@ import (
 )
 
 type User struct {
-	User_Id    string         `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
-	User_Name  string         `json:"name"`
-	Gender     string         `json:"gender"`
-	Contact_No string         `json:"phoneNumber"`
-	CreatedAt  time.Time      `json:"createdAt"`
-	UpdatedAt  time.Time      `json:"updatedAt"`
-	DeletedAt  gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	User_Id   string         `json:"user_id" gorm:"default:uuid_generate_v4();unique;primaryKey"` //PK
+	User_Name string         `json:"name"`
+	Gender    string         `json:"gender"`
+	Contact   string         `json:"phoneNumber"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `json:"deletedAt" gorm:"index"`
+	IsActive  bool           `json:"isActive"`
 }
 
 type UAttendence struct {
