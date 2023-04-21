@@ -29,6 +29,7 @@ func ConfigureRoutes(server *Server) {
 	server.engine.POST("/createEmpRole", provider.AdminAuthorization, handler.EmployeeRoleHandler)
 	server.engine.GET("/empWithuser", provider.AdminAuthorization, handler.GetUsersWithEmployeesHandler)
 	server.engine.POST("/empAttendence", provider.AdminAuthorization, handler.EmployeeAttendenceHandler)
+	server.engine.POST("/getEmpById", provider.AdminAuthorization, handler.GetEmployeeByIdHandler)
 
 
 	//users

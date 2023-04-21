@@ -10,14 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Description	Sends a otp to the number entered
-// @Accept			json
-// @Produce		json
-// @Success		200			{object}	response.Success
-// @Failure		400			{object}	response.Error
-// @Param			phoneNumber	body		request.SendOtpRequest	true	"Phone Number of registered user"
-// @Tags			Authentication
-// @Router			/sendOTP [post]
+
+//	@Description	Sends a otp to the number entered
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Param			phoneNumber	body		request.SendOtpRequest	true	"Phone Number of registered user"
+//	@Tags			Authentication
+//	@Router			/sendOTP [post]
+
 func SendOtpHandler(context *gin.Context) {
 	utils.SetHeader(context)
 	var phoneNumber request.SendOtpRequest
@@ -25,6 +27,7 @@ func SendOtpHandler(context *gin.Context) {
 	fmt.Println("phoneNumber is", phoneNumber)
 	authentication.SendOtpService(context, phoneNumber)
 }
+
 
 // @Description	Verifies the OTP sent to the user
 // @Accept			json
@@ -58,5 +61,4 @@ func LogoutHandler(context *gin.Context) {
 	}
 	authentication.LogoutService(context, cookie.Value)
 
-}
 
