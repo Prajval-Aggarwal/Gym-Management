@@ -59,3 +59,4 @@ func LogoutHandler(context *gin.Context) {
 	authentication.LogoutService(context, cookie.Value)
 
 }
+

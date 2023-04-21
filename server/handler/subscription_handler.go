@@ -60,6 +60,7 @@ func EndSubscriptionHandler(context *gin.Context) {
 	subscriptions.EndSubscriptionService(context, subscriptionEnd)
 }
 
+
 // @Description	updates the subscription for the user
 // @Accept			json
 // @Produce		json
@@ -68,6 +69,7 @@ func EndSubscriptionHandler(context *gin.Context) {
 // @Param			SubsDetails	body		request.UpdateSubRequest	true	"Subscription details"
 // @Tags			Subscription
 // @Router			/updateSubscription [put]
+
 func UpdateSubscriptionHandler(context *gin.Context) {
 	utils.SetHeader(context)
 

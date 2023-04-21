@@ -3,6 +3,7 @@ package server
 import (
 	_ "gym/docs"
 	"gym/server/handler"
+
 	"gym/server/provider"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -28,7 +29,7 @@ func ConfigureRoutes(server *Server) {
 	server.engine.POST("/createEmpRole", provider.AdminAuthorization, handler.EmployeeRoleHandler)
 	server.engine.GET("/empWithuser", provider.AdminAuthorization, handler.GetUsersWithEmployeesHandler)
 	server.engine.POST("/empAttendence", provider.AdminAuthorization, handler.EmployeeAttendenceHandler)
-	server.engine.POST("/getEmpById", provider.AdminAuthorization, handler.GetEmployeeByIdHandler)
+
 
 	//users
 	server.engine.POST("/createUser", handler.CreateUserHandler)
@@ -42,9 +43,12 @@ func ConfigureRoutes(server *Server) {
 	//subscriptions
 	server.engine.POST("/createSubscription", provider.UserAuthorization, handler.CreateSubscriptionHandler)
 	server.engine.DELETE("/endSubscription", provider.AdminAuthorization, handler.EndSubscriptionHandler)
+	server.engine.POST("/updateSubscription", provider.AdminAuthorization, handler.UpdateMembershipHandler)
 
 	//Payment Routes
-	server.engine.POST("/createPayment", provider.UserAuthorization, handler.MakePaymentHandler)
+	server.engine.POST("/createPayment", handler.MakePaymentHandler)
+	server.engine.POST("/paymentResponse",handler.PaymentResponse)
+
 
 	//Auth routes
 	server.engine.POST("/adminRegister", handler.AdminRegisterHandler)
